@@ -78,7 +78,7 @@ export function CodeArea() {
               ))}
             </ul>
             <textarea
-              className="bg-neutral-800 size-full p-1 resize-none outline-none"
+              className="bg-neutral-800 size-full p-1 resize-none outline-hidden"
               placeholder="Write your code here"
               value={ws.value}
               ref={textAreaRef}
