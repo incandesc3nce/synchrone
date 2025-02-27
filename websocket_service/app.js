@@ -2,6 +2,11 @@ const WebSocketServer = require('ws').Server;
 
 const wss = new WebSocketServer({ port: 8080 });
 
+const logAction = (action, size) => {
+  console.log(action);
+  console.log(`Clients amount: ${size}`);
+}
+
 let msg = '// Welcome to the synchrone WebSocket server';
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(data) {
@@ -20,11 +25,11 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.on('close', function close() {
-    console.log('Client disconnected');
+    logAction('Client disconnected', wss.clients.size);
   });
 
   ws.send(JSON.stringify({ message: msg, type: 'code' }));
-  console.log('Client connected');
+  logAction('Client connected', wss.clients.size);
 });
 
 console.log('WebSocket server started on ws://localhost:8080');
