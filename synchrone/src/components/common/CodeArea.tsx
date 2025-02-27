@@ -69,24 +69,26 @@ export function CodeArea() {
         <p>Connecting...</p>
       ) : (
         <>
-          <div className="size-full flex font-[family-name:var(--font-fira-code)] text-white">
-            <ul className="bg-neutral-900 py-1 px-2">
-              {ws.value.split('\n').map((line, index) => (
-                <li key={index} className="text-white">
-                  {index + 1}
-                </li>
-              ))}
-            </ul>
-            <textarea
-              className="bg-neutral-800 size-full p-1 resize-none outline-hidden"
-              placeholder="Write your code here"
-              value={ws.value}
-              ref={textAreaRef}
-              onChange={handleCodeChange}
-              onKeyDown={handleSave}
-            />
+          <div className="min-w-full w-auto flex font-[family-name:var(--font-fira-code)] text-white">
+            <div className="flex size-full flex-1">
+              <ul className="bg-neutral-900 py-1 px-2 min-w-9">
+                {ws.value.split('\n').map((line, index) => (
+                  <li key={index} className="text-white text-right">
+                    {index + 1}
+                  </li>
+                ))}
+              </ul>
+              <textarea
+                className="bg-neutral-800 w-full min-h-[8rem] h-auto p-1 resize-none outline-hidden flex-1"
+                placeholder="Write your code here"
+                value={ws.value}
+                ref={textAreaRef}
+                onChange={handleCodeChange}
+                onKeyDown={handleSave}
+              />
+            </div>
           </div>
-          <button className="bg-neutral-800 p-2 rounded-lg" onClick={runCode}>
+          <button className="bg-neutral-800 p-2 rounded-lg cursor-pointer" onClick={runCode}>
             run javascript in browser
           </button>
         </>
