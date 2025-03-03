@@ -3,7 +3,6 @@
 import CodeMirror, { oneDarkTheme } from '@uiw/react-codemirror';
 import { langs } from '@uiw/codemirror-extensions-langs';
 import { basicSetup } from '@uiw/codemirror-extensions-basic-setup';
-import { indentUnit } from '@codemirror/language';
 import { RefObject, useEffect, useState } from 'react';
 import { useWebsockets } from '@/hooks/common';
 
@@ -45,9 +44,8 @@ export const CodeEditor = ({ codeRef }: CodeEditorProps) => {
           height="100%"
           theme={'dark'}
           extensions={[
-            basicSetup(),
+            basicSetup({ foldGutter: false }),
             langs.javascript(),
-            indentUnit.of('\t'),
             oneDarkTheme,
           ]}
         />
