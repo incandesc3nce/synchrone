@@ -1,4 +1,4 @@
-import { WSMessage } from '../../interfaces/WSMessage';
+import { WSMessage } from '@/interfaces/common';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 type WebSocketState = WebSocket['readyState'];
