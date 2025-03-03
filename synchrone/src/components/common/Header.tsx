@@ -10,10 +10,10 @@ export const Header = () => {
           </Link>
           <ul className="flex gap-4 font-medium">
             <li>
-              <Link href="/editor" className='text-lg'>Регистрация</Link>
+              <Link href="/sign-up" className='text-lg'>Регистрация</Link>
             </li>
             <li>
-              <Link href="/editor" className='text-lg'>Вход</Link>
+              <Link href="/login" className='text-lg'>Вход</Link>
             </li>
             <li>
               <Link href="/editor" className='text-lg'>Редактор</Link>
