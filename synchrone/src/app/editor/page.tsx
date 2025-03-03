@@ -1,4 +1,4 @@
-import { CodeArea } from "@/components/common/CodeArea";
+import { CodeArea } from '@/components/editor/';
 
 export default function EditorPage() {
   return (

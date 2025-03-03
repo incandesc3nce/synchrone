@@ -26,10 +26,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/hooks/common/useWebsockets.tsx",
-    "src/components/common/CodeArea.tsx",
-    "src/interfaces/WSMessage.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
