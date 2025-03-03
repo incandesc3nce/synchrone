@@ -1,1 +1,1 @@
-export * from './CodeArea';
+export * from './CodeSection';

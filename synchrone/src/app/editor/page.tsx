@@ -1,10 +1,10 @@
-import { CodeArea } from '@/components/editor/';
+import { CodeSection } from '@/components/editor/';
 
 export default function EditorPage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16  font-[family-name:var(--font-raleway-sans)]">
-      <main className="row-start-2 size-full flex flex-col gap-4 items-center">
-        <CodeArea />
+    <div className="grid items-center justify-items-center min-h-screen pt-8 pl-8 pb-20 gap-16 font-[family-name:var(--font-raleway-sans)]">
+      <main className="size-full flex flex-col gap-4 items-center">
+        <CodeSection />
       </main>
     </div>
   );
