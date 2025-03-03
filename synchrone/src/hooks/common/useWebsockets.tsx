@@ -1,9 +1,12 @@
 import { WSMessage } from '../../interfaces/WSMessage';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
+type WebSocketState = WebSocket['readyState'];
+
 const connect = (
   wsRef: React.RefObject<WebSocket | null>,
-  setValue: Dispatch<SetStateAction<string>>
+  setValue: Dispatch<SetStateAction<string>>,
+  setReadyState: Dispatch<SetStateAction<WebSocketState>>
 ) => {
   console.log('Connecting to server...');
 
@@ -12,6 +15,7 @@ const connect = (
 
     wsRef.current.onopen = () => {
       console.log('Connected to server');
+      setReadyState(wsRef.current?.readyState as WebSocketState);
     };
 
     wsRef.current.onmessage = (e) => {
@@ -26,6 +30,7 @@ const connect = (
 
     wsRef.current.onclose = () => {
       console.log('Disconnected from server');
+      setReadyState(wsRef.current?.readyState as WebSocketState);
     };
   }
 
@@ -39,10 +44,13 @@ const connect = (
 export const useWebsockets = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const [value, setValue] = useState<string>('');
+  const [readyState, setReadyState] = useState<WebSocketState>(
+    WebSocket.CLOSED
+  );
 
   useEffect(() => {
     const current = wsRef.current;
-    const disconnect = connect(wsRef, setValue);
+    const disconnect = connect(wsRef, setValue, setReadyState);
 
     return () => {
       if (current?.readyState === WebSocket.OPEN) {
@@ -60,5 +68,6 @@ export const useWebsockets = () => {
     value,
     setValue,
     send,
+    readyState,
   };
 };
