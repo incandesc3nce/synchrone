@@ -8,7 +8,7 @@ export const Header = () => {
           <Link href="/" className="font-bold text-xl">
             synchrone
           </Link>
-          <ul className="flex gap-4 font-medium">
+          <ul className="flex md:gap-6 gap-4 font-medium">
             <li>
               <Link href="/sign-up" className='text-lg'>Регистрация</Link>
             </li>
