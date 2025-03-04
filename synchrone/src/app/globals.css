@@ -68,3 +68,36 @@ body {
     transform: scale(1);
   }
 }
+
+/* loader */
+
+.loader {
+  aspect-ratio: 5;
+  display: grid;
+  --_g: no-repeat radial-gradient(farthest-side,#fff 94%,#0000);
+}
+
+.loader:before,
+.loader:after {
+  content: "";
+  grid-area: 1/1;
+  background:
+    var(--_g) left,
+    var(--_g) right;
+  background-size: 20% 100%;
+  animation: l32 1s infinite; 
+}
+
+.loader:after { 
+  --_color: no-repeat radial-gradient(farthest-side,#155dfc 94%,#0000);
+  background:
+    var(--_color) calc(1*100%/3),
+    var(--_color) calc(2*100%/3);
+  background-size: 20% 100%;
+  animation-direction: reverse;
+  fill: var(--color-blue-600)
+}
+
+@keyframes l32 {
+  80%,100% {transform:rotate(.5turn)}
+}
