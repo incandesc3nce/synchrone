@@ -5,7 +5,7 @@ export default function HomePage() {
   return (
     <div className="font-raleway">
       <Header />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8 pb-20 gap-16">
+      <div className="flex flex-col items-center justify-center min-h-screen gap-16">
         <main className="flex flex-col gap-8 items-center justify-center">
           <HeroSection />
           <FeaturesSection />
