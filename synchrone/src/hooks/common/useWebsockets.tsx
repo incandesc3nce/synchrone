@@ -11,7 +11,7 @@ const connect = (
   console.log('Connecting to server...');
 
   if (!wsRef.current || wsRef.current.readyState === WebSocket.CLOSED) {
-    wsRef.current = new WebSocket('ws://127.0.0.1:8080');
+    wsRef.current = new WebSocket(process.env.WSS_URL!);
 
     wsRef.current.onopen = () => {
       console.log('Connected to server');
