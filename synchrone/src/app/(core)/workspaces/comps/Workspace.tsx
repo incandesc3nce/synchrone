@@ -106,12 +106,12 @@ export const Workspace = ({ promise }) => {
         </div>
       )}
       <main className="flex gap-4 size-full min-h-[75vh]">
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap h-100">
           {data ? (
             data.map((item) => (
               <div
                 key={item.id}
-                className="relative flex flex-col justify-between p-4 bg-neutral-800 rounded-lg max-h-42 w-80">
+                className="relative -z-1 flex flex-col justify-between p-4 bg-neutral-800 rounded-lg max-h-42 w-80">
                 <div>
                   <div className="flex items-center">
                     <Typography variant="h4">{item.name}</Typography>

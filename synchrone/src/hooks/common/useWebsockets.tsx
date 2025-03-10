@@ -11,7 +11,7 @@ const connect = (
   console.log('Connecting to server...');
 
   if (!wsRef.current || wsRef.current.readyState === WebSocket.CLOSED) {
-    wsRef.current = new WebSocket(process.env.WSS_URL!);
+    wsRef.current = new WebSocket(process.env.NEXT_PUBLIC_WSS_URL as string);
 
     wsRef.current.onopen = () => {
       console.log('Connected to server');

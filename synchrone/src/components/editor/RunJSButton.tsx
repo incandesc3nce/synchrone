@@ -1,6 +1,7 @@
 'use client';
 
 import { RefObject } from 'react';
+import { Button } from '../common';
 
 interface RunJSButtonProps {
   codeRef: RefObject<string>;
@@ -12,10 +13,8 @@ export const RunJSButton = ({ codeRef }: RunJSButtonProps) => {
   };
 
   return (
-    <button
-      className="bg-neutral-800 p-2 rounded-lg cursor-pointer"
-      onClick={runJS}>
-      run JavaScript
-    </button>
+    <Button type="button" variant="contained" onClick={runJS}>
+      Скачать
+    </Button>
   );
 };
