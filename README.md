@@ -1,3 +1,3 @@
-# Syncrone - synchronous web code editor
+# Synchrone - synchronous collaborative code editor
 
 TBA
