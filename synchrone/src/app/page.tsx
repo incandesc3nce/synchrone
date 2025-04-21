@@ -1,5 +1,5 @@
 import { Header } from '@/components/common';
-import { FeaturesSection, HeroSection } from '@/components/landing';
+import { FeaturesSection, HeroSection, QuestionsSection } from '@/components/landing';
 
 export default function HomePage() {
   return (
@@ -9,6 +9,7 @@ export default function HomePage() {
         <main className="flex flex-col gap-8 items-center justify-center">
           <HeroSection />
           <FeaturesSection />
+          <QuestionsSection />
         </main>
       </div>
       <footer className="flex flex-col items-center justify-center gap-4 py-8 bg-neutral-900 text-gray-100">
