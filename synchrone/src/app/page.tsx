@@ -13,7 +13,7 @@ export default function HomePage() {
         </main>
       </div>
       <footer className="flex flex-col items-center justify-center gap-4 py-8 bg-neutral-900 text-gray-100">
-        <p>&copy; 2025 Synchrone. All rights reserved.</p>
+        <p>&copy; 2025 Synchrone</p>
       </footer>
     </div>
   );
