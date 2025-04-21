@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 
 interface ButtonProps {
   variant: 'text' | 'outlined' | 'contained' | 'custom';
-  type: 'submit' | 'button' | 'reset';
   children: ReactNode;
+  type?: 'submit' | 'button' | 'reset';
   className?: string;
   disabled?: boolean;
   onClick?: () => void;
@@ -17,7 +17,7 @@ const buttonVariants = {
 }
 
 export const Button = (props: ButtonProps) => {
-  const { variant, type, children, className, disabled, onClick } = props;
+  const { variant, type = 'button', children, className, disabled, onClick } = props;
   const buttonClass = buttonVariants[variant];
 
   return (
