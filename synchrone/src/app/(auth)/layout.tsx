@@ -8,5 +8,5 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     return redirect('/workspaces');
   }
 
-  return <main className="flex justify-center items-center h-screen">{children}</main>;
+  return <main className="flex justify-center items-center h-screen font-sans">{children}</main>;
 }

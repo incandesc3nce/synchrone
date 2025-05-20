@@ -5,7 +5,11 @@ import { AuthInput } from './AuthInput';
 import { HidePasswordInjection } from './HidePasswordInjection';
 import { KeyRound } from 'lucide-react';
 
-export const AuthInputPassword = () => {
+export const AuthInputPassword = ({
+  ref,
+}: {
+  ref?: React.RefObject<HTMLInputElement | null>;
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -17,6 +21,7 @@ export const AuthInputPassword = () => {
       minLength={8}
       maxLength={100}
       label="Пароль"
+      ref={ref}
       injection={
         <HidePasswordInjection
           showPassword={showPassword}
