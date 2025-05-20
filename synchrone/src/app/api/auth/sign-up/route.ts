@@ -64,7 +64,8 @@ export async function POST(
 
     const token = signJWT({
       id: newUser.id,
-      name: newUser.username,
+      username: newUser.username,
+      email: newUser.email,
     });
 
     await setTokenCookie(token);

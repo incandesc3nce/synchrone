@@ -1,6 +1,7 @@
+import { TokenPayload } from '@/interfaces/auth/TokenPayload';
 import jwt from 'jsonwebtoken';
 
-export const signJWT = (payload: { id: string; name: string }) => {
+export const signJWT = (payload: TokenPayload) => {
   const secret = process.env.JWT_SECRET as string;
   const token = jwt.sign(payload, secret, {
     expiresIn: '3d',
@@ -9,9 +10,7 @@ export const signJWT = (payload: { id: string; name: string }) => {
   return token;
 };
 
-export const verifyJWT = (
-  token: string | undefined | null
-): { id: string; name: string } | null => {
+export const verifyJWT = (token: string | undefined | null): TokenPayload | null => {
   const secret = process.env.JWT_SECRET as string;
 
   if (!token) {
@@ -20,7 +19,7 @@ export const verifyJWT = (
 
   try {
     const decoded = jwt.verify(token, secret);
-    return decoded as { id: string; name: string };
+    return decoded as { id: string; username: string; email: string };
   } catch (error) {
     console.error('JWT verification error:', error);
     return null;
