@@ -45,7 +45,7 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthFormWrapper title="Вход в аккаунт">
+    <AuthFormWrapper title="Вход в аккаунт" onSubmit={handleSubmit}>
       <AuthInputEmail ref={emailRef} />
       <AuthInputPassword ref={passwordRef} />
       <Typography variant="p" className="text-center">
