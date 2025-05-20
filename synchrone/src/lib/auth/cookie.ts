@@ -1,4 +1,6 @@
+import { TokenPayload } from '@/interfaces/auth/TokenPayload';
 import { cookies } from 'next/headers';
+import { verifyJWT } from './jwt';
 
 export const setTokenCookie = async (token: string) => {
   const cookie = await cookies();
@@ -17,3 +19,24 @@ export const deleteTokenCookie = async () => {
 
   cookie.delete('token');
 };
+
+export const getCurrentToken = async (): Promise<TokenValidationResult> => {
+  const token = (await cookies()).get('token')?.value ?? null;
+
+  if (!token) {
+    return { token: null, user: null };
+  }
+
+  const decoded = verifyJWT(token);
+  if (!decoded) {
+    return { token: null, user: null };
+  }
+
+  const user = decoded as TokenPayload;
+  return { token, user };
+};
+
+interface TokenValidationResult {
+  token: string | null;
+  user: TokenPayload | null;
+}
