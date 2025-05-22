@@ -5,13 +5,16 @@ import { ModalWindow } from '@/components/common/ModalWindow';
 import { ClientFetch } from '@/utils/ClientFetch';
 import { Edit } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
-import type { Workspace as WorkspaceObject } from '../../../prisma/generated';
 import { CreateProjectButton } from './CreateProjectButton';
-import { WorkspaceResponse } from '@/types/core/workspace/WorkspaceResponse';
+import {
+  WorkspaceResponse,
+  WorkspaceWithUsers,
+} from '@/types/core/workspace/WorkspaceResponse';
 import { toastSuccess } from '@/lib/toast';
+import { WorkspaceUser } from './WorkspaceUser';
 
 export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) => {
-  const [data, setData] = useState<WorkspaceObject[] | null>(null);
+  const [data, setData] = useState<WorkspaceWithUsers[] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
 
@@ -79,6 +82,32 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
     toastSuccess('Проект успешно переименован!');
   };
 
+  const handleDeleteUser = async (userId: string, workspaceId: string) => {
+    setData((prevData) =>
+      prevData
+        ? prevData.map((item) => {
+            if (item.id === workspaceId) {
+              return {
+                ...item,
+                users: item.users.filter((user) => user.id !== userId),
+              };
+            }
+            return item;
+          })
+        : null
+    );
+
+    await ClientFetch('/api/workspaces/user', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, workspaceId }),
+    });
+
+    toastSuccess('Пользователь успешно удалён из проекта!');
+  };
+
   return (
     <>
       <CreateProjectButton
@@ -93,42 +122,57 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
                 key={item.id}
                 className="relative flex flex-col justify-between p-4 bg-neutral-800 rounded-lg max-h-42 w-80">
                 <div>
-                  <div className="flex items-center">
-                    <Typography variant="h4">{item.name}</Typography>
-                    <Button
-                      variant="text"
-                      type="button"
-                      className="font-semibold p-2!"
-                      onClick={() => {
-                        setIsModalOpen(true);
-                        setProjectName(item.name);
-                      }}>
-                      <Edit size={20} />
-                    </Button>
-                    {isModalOpen && (
-                      <ModalWindow
-                        setIsModalOpen={setIsModalOpen}
-                        buttonText="Переименовать"
-                        submitHandler={(e) => handleEditProject(e, item.id)}
-                        formContent={
-                          <div className="space-y-2">
-                            <label
-                              htmlFor="name"
-                              className="block font-medium text-neutral-50">
-                              Название проекта
-                            </label>
-                            <input
-                              className="block w-full bg-neutral-700 py-1 px-2 rounded-lg outline-0 border-2 border-transparent focus:border-blue-600"
-                              name="name"
-                              type="text"
-                              value={projectName}
-                              autoFocus
-                              onChange={(e) => setProjectName(e.target.value)}
-                            />
-                          </div>
-                        }
-                      />
-                    )}
+                  <div className="flex items-start flex-col">
+                    <div className="flex items-center">
+                      <Typography variant="h4">{item.name}</Typography>
+                      <Button
+                        variant="text"
+                        type="button"
+                        className="font-semibold p-2!"
+                        onClick={() => {
+                          setIsModalOpen(true);
+                          setProjectName(item.name);
+                        }}>
+                        <Edit size={20} />
+                      </Button>
+                      {isModalOpen && (
+                        <ModalWindow
+                          setIsModalOpen={setIsModalOpen}
+                          buttonText="Переименовать"
+                          submitHandler={(e) => handleEditProject(e, item.id)}
+                          formContent={
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="name"
+                                className="block font-medium text-neutral-50">
+                                Название проекта
+                              </label>
+                              <input
+                                className="block w-full bg-neutral-700 py-1 px-2 rounded-lg outline-0 border-2 border-transparent focus:border-blue-600"
+                                name="name"
+                                type="text"
+                                value={projectName}
+                                autoFocus
+                                onChange={(e) => setProjectName(e.target.value)}
+                              />
+                            </div>
+                          }
+                        />
+                      )}
+                    </div>
+                    <details>
+                      <summary>Участники ({item.users.length})</summary>
+                      <div className="flex flex-col gap-2">
+                        {item.users.map((user) => (
+                          <WorkspaceUser
+                            user={user}
+                            workspaceId={item.id}
+                            handleDeleteUser={handleDeleteUser}
+                            key={`${item.id}_${user.id}`}
+                          />
+                        ))}
+                      </div>
+                    </details>
                   </div>
                   <Button
                     variant="text"
