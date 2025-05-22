@@ -7,15 +7,19 @@ import { Edit } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import type { Workspace as WorkspaceObject } from '../../../prisma/generated';
 import { CreateProjectButton } from './CreateProjectButton';
+import { WorkspaceResponse } from '@/types/workspace/WorkspaceResponse';
+import { toastSuccess } from '@/lib/toast';
 
-export const Workspace = ({ promise }: { promise: Promise<WorkspaceObject[]> }) => {
+export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) => {
   const [data, setData] = useState<WorkspaceObject[] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
 
   useEffect(() => {
     promise.then((res) => {
-      setData(res);
+      if (res.projects) {
+        setData(res.projects);
+      }
     });
   }, [promise]);
 
@@ -23,7 +27,7 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceObject[]> }) 
     e.preventDefault();
     setIsModalOpen(false);
 
-    const response = await ClientFetch<WorkspaceObject>('/api/workspaces', {
+    const response = await ClientFetch<WorkspaceResponse>('/api/workspaces', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,7 +35,12 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceObject[]> }) 
       body: JSON.stringify({ name: projectName }),
     });
 
-    setData((prevData) => (prevData ? [...prevData, response] : [response]));
+    const project = response.project;
+    if (!project) return;
+
+    setData((prevData) => (prevData ? [...prevData, project] : [project]));
+
+    toastSuccess('Проект успешно создан!');
   };
 
   const handleDeleteProject = async (id: string) => {
@@ -44,6 +53,8 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceObject[]> }) 
     });
 
     setData(data?.filter((item) => item.id !== id) || data);
+
+    toastSuccess('Проект успешно удалён!');
   };
 
   const handleEditProject = async (e: FormEvent, id: string) => {
@@ -51,7 +62,7 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceObject[]> }) 
 
     setIsModalOpen(false);
 
-    const res = await ClientFetch<WorkspaceObject>('/api/workspaces', {
+    const res = await ClientFetch<WorkspaceResponse>('/api/workspaces', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +70,13 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceObject[]> }) 
       body: JSON.stringify({ id, name: projectName }),
     });
 
-    setData(data ? data.map((item) => (item.id === id ? res : item)) : [res]);
+    const project = res.project;
+
+    if (!project) return;
+
+    setData(data ? data.map((item) => (item.id === id ? project : item)) : [project]);
+
+    toastSuccess('Проект успешно переименован!');
   };
 
   return (

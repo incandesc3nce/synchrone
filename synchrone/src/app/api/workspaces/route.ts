@@ -20,9 +20,16 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(info, { status: 200 });
+    return NextResponse.json(
+      { projects: info, message: 'Получены проекты', success: true },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error('Error fetching projects:', error);
+    return NextResponse.json(
+      { message: 'Произошла ошибка при получении проектов', success: false },
+      { status: 500 }
+    );
   }
 }
 
@@ -47,9 +54,16 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(info, { status: 201 });
+    return NextResponse.json(
+      { projects: info, message: 'Успешно создан проект!', success: true },
+      { status: 201 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error('Error creating project:', error);
+    return NextResponse.json(
+      { message: 'Произошла ошибка при создании проекта', success: false },
+      { status: 500 }
+    );
   }
 }
 
@@ -77,9 +91,16 @@ export async function PATCH(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(info, { status: 200 });
+    return NextResponse.json(
+      { project: info, message: 'Успешно обновлен проект!', success: true },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error('Error updating project:', error);
+    return NextResponse.json(
+      { message: 'Произошла ошибка при обновлении проекта', success: false },
+      { status: 500 }
+    );
   }
 }
 
@@ -93,7 +114,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
 
-    const info = await prisma.workspace.delete({
+    await prisma.workspace.delete({
       where: {
         id,
         users: {
@@ -104,8 +125,15 @@ export async function DELETE(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(info, { status: 200 });
+    return NextResponse.json(
+      { message: 'Проект успешно удален!', success: true },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error('Error deleting project:', error);
+    return NextResponse.json(
+      { message: 'Произошла ошибка при удалении проекта', success: false },
+      { status: 500 }
+    );
   }
 }
