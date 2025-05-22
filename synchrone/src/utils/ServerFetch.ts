@@ -1,14 +1,10 @@
-/**
- * Client-side API fetch wrapper function.
- */
-export const APIFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
-  const token = typeof window !== 'undefined'
-    ? document.cookie
-        .split('; ')
-        .find(row => row.startsWith('token='))
-        ?.split('=')[1]
-    : undefined;
+import { cookies } from "next/headers";
 
+/**
+ * Serverside fetch wrapper function.
+ */
+export const ServerFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
+  const token = (await cookies()).get('token')?.value ?? null;
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -29,4 +25,4 @@ export const APIFetch = async <T>(url: string, options?: RequestInit): Promise<T
   }
 
   return data as T;
-};
+} 

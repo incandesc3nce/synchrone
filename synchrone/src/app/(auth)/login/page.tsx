@@ -4,7 +4,7 @@ import { AuthFormWrapper, AuthInputEmail, AuthInputPassword } from '@/components
 import { SubmitButton, Typography } from '@/components/common';
 import { APIResponse } from '@/types/auth/APIResponse';
 import { toastSuccess, toastError } from '@/lib/toast';
-import { APIFetch } from '@/utils/APIFetch';
+import { ClientFetch } from '@/utils/ClientFetch';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -26,7 +26,7 @@ export default function LoginPage() {
       return;
     }
 
-    const { message, success } = await APIFetch<APIResponse>('/api/auth/login', {
+    const { message, success } = await ClientFetch<APIResponse>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({
         email,

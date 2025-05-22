@@ -1,6 +1,7 @@
 'use client';
 import { Button, Typography } from '@/components/common';
 import { Loader } from '@/components/common/Loader';
+import { ClientFetch } from '@/utils/ClientFetch';
 import { Edit } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 
@@ -21,25 +22,25 @@ export const Workspace = ({ promise }) => {
     e.preventDefault();
     setIsModalOpen(false);
 
-    const response = await fetch('/api/workspaces', {
+    const response = await ClientFetch('/api/workspaces', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ name: projectName }),
-    }).then((res) => res.json());
+    });
 
     setData([...data, response]);
   };
 
   const handleDeleteProject = async (id: string) => {
-    const response = await fetch('/api/workspaces', {
+    const response = await ClientFetch('/api/workspaces', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ id }),
-    }).then((res) => res.json());
+    });
 
     setData(data.filter((item) => item.id !== id));
   };
@@ -49,13 +50,13 @@ export const Workspace = ({ promise }) => {
 
     setIsModel2Open(false);
 
-    const res = await fetch('/api/workspaces', {
+    const res = await ClientFetch('/api/workspaces', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ id, name: projectName }),
-    }).then((res) => res.json());
+    });
 
     setData(data.map((item) => (item.id === id ? res : item)));
   };
@@ -170,7 +171,9 @@ export const Workspace = ({ promise }) => {
                   </Button>
                 </div>
                 <Button variant="contained">
-                  <a href="/editor" className='size-full'>Перейти</a>
+                  <a href="/editor" className="size-full">
+                    Перейти
+                  </a>
                 </Button>
               </div>
             ))
