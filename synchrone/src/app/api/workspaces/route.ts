@@ -18,6 +18,14 @@ export async function GET(req: NextRequest) {
           },
         },
       },
+      include: {
+        users: {
+          select: {
+            username: true,
+            email: true,
+          },
+        }
+      }
     });
 
     return NextResponse.json(

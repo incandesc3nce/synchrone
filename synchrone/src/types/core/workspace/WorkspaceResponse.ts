@@ -1,7 +1,11 @@
-import { Workspace } from '@prisma/client';
+import { User, Workspace } from '@prisma/client';
 import { APIResponse } from '../../common/APIResponse';
 
+export type WorkspaceWithUsers = Workspace & {
+  users: User[];
+};
+
 export type WorkspaceResponse = APIResponse & {
-  projects?: Workspace[];
-  project?: Workspace;
+  projects?: WorkspaceWithUsers[];
+  project?: WorkspaceWithUsers;
 };
