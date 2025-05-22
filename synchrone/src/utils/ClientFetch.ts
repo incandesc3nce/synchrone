@@ -1,7 +1,12 @@
+import { APIResponse } from '@/types/auth/APIResponse';
+
 /**
  * Client-side API fetch wrapper function.
  */
-export const ClientFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
+export const ClientFetch = async <T extends APIResponse>(
+  url: string,
+  options?: RequestInit
+): Promise<T> => {
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -11,14 +16,11 @@ export const ClientFetch = async <T>(url: string, options?: RequestInit): Promis
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Error: ${response.status} ${errorText}`);
+    const json = await response.json();
+    throw new Error(json.message);
   }
 
   const data = await response.json();
-  if (data.error) {
-    throw new Error(`Error: ${data.error}`);
-  }
 
   return data as T;
 };
