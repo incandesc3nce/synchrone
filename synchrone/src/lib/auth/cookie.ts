@@ -40,7 +40,14 @@ export const getCurrentToken = async (): Promise<TokenValidationResult> => {
 export const getCurrentTokenAPI = async (
   req: NextRequest
 ): Promise<TokenValidationResult> => {
-  const token = req.headers.get('Authorization')?.split(' ')[1] ?? null;
+  const token =
+    (req.headers.get('authorization')?.split(' ')[1] ||
+      req.headers
+        .get('cookie')
+        ?.split(';')
+        .find((c) => c.trim().startsWith('token='))
+        ?.split('=')[1]) ??
+    null;
 
   if (!token) {
     return { token: null, user: null };
@@ -52,6 +59,7 @@ export const getCurrentTokenAPI = async (
   }
 
   const user = decoded as TokenPayload;
+
   return { token, user };
 };
 
