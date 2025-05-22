@@ -1,6 +1,6 @@
 import { Workspace } from '../../../components/workspace/Workspace';
 import { ServerFetch } from '@/utils/ServerFetch';
-import { WorkspaceResponse } from '@/types/workspace/WorkspaceResponse';
+import { WorkspaceResponse } from '@/types/core/workspace/WorkspaceResponse';
 import { CoreHeader } from '@/components/core/CoreHeader';
 
 export default async function WorkspacesPage() {
