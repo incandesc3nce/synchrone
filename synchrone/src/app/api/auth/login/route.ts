@@ -5,6 +5,7 @@ import { signJWT } from '@/lib/auth/jwt';
 import { prisma } from '@/lib/prisma';
 import { validateEmail } from '@/lib/validation/email';
 import { NextRequest, NextResponse } from 'next/server';
+import { validatePassword } from '@/lib/validation/password';
 
 export async function POST(
   req: NextRequest
@@ -19,7 +20,7 @@ export async function POST(
   }
 
   const emailValidationErrors = validateEmail(email);
-  const passwordValidationErrors = validateEmail(password);
+  const passwordValidationErrors = validatePassword(password);
 
   if (emailValidationErrors) {
     return NextResponse.json(
