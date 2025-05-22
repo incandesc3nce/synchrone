@@ -15,7 +15,9 @@ export const SubmitButton = ({
       type="button"
       disabled
       className="flex justify-center items-center">
-      <Loader size='h-2 py-2' />
+      <div className='my-2'>
+        <Loader size='h-2' />
+      </div>
     </Button>
   ) : (
     <Button variant="contained" type="submit">

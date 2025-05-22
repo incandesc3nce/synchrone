@@ -26,21 +26,26 @@ export default function LoginPage() {
       return;
     }
 
-    const { message, success } = await ClientFetch<APIResponse>('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    }).finally(() => {
-      setIsLoading(false);
-    });
+    try {
+      const { message, success } = await ClientFetch<APIResponse>('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-    if (success) {
-      toastSuccess(message);
-      router.push('/workspaces');
-    } else {
-      toastError(message);
+      if (success) {
+        toastSuccess(message);
+        router.push('/workspaces');
+      } else {
+        toastError(message);
+      }
+    } catch (error) {
+      const err = error as Error;
+      toastError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
