@@ -10,7 +10,7 @@ interface LogoutButtonProps {
   variant?: ButtonVariant;
 }
 
-export const LogoutButton: FC<LogoutButtonProps> = ({ variant = 'custom' }) => {
+export const LogoutButton: FC<LogoutButtonProps> = ({ variant = 'contained' }) => {
   const router = useRouter();
   const handleLogout = async () => {
     await ClientFetch('/api/auth/logout', {
