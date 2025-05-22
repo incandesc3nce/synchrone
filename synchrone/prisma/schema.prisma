@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/"
 }
 
 datasource db {
@@ -18,7 +19,7 @@ model User {
 }
 
 model Workspace {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   name      String
   users     User[]
   files     File[]
@@ -27,7 +28,7 @@ model Workspace {
 }
 
 model File {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   name      String
   content   String
   workspace Workspace @relation(fields: [workspaceId], references: [id])
