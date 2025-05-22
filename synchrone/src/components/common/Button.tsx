@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
+import { ButtonVariant } from '@/types/components/ButtonVariant';
+import { ReactNode } from 'react';
 
 interface ButtonProps {
-  variant: 'text' | 'outlined' | 'contained' | 'custom';
+  variant: ButtonVariant;
   children: ReactNode;
   type?: 'submit' | 'button' | 'reset';
   className?: string;
@@ -13,8 +14,8 @@ const buttonVariants = {
   text: 'text-neutral-100 hover:text-neutral-200',
   outlined: 'border border-neutral-100 text-neutral-100 hover:text-neutral-200',
   contained: 'bg-blue-600 text-white hover:bg-blue-700',
-  custom: ''
-}
+  custom: '',
+};
 
 export const Button = (props: ButtonProps) => {
   const { variant, type = 'button', children, className, disabled, onClick } = props;
@@ -23,10 +24,13 @@ export const Button = (props: ButtonProps) => {
   return (
     <button
       type={type}
-      className={'py-2 px-4 rounded-2xl cursor-pointer transition-colors duration-150 font-medium ' + buttonClass + (className ? ` ${className}` : '')}
+      className={
+        'py-2 px-4 rounded-2xl cursor-pointer transition-colors duration-150 font-medium ' +
+        buttonClass +
+        (className ? ` ${className}` : '')
+      }
       disabled={disabled}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {children}
     </button>
   );
