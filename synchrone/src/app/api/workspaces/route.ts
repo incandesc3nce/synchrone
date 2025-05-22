@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
             username: true,
             email: true,
           },
-        }
-      }
+        },
+      },
     });
 
     return NextResponse.json(
@@ -54,9 +54,18 @@ export async function POST(req: NextRequest) {
     const info = await prisma.workspace.create({
       data: {
         name,
+        ownerId: user.id,
         users: {
           connect: {
             id: user.id,
+          },
+        },
+      },
+      include: {
+        users: {
+          select: {
+            username: true,
+            email: true,
           },
         },
       },

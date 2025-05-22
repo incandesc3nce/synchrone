@@ -13,7 +13,12 @@ model User {
   email     String   @unique
   username      String
   password_hash String
-  workspaces Workspace[]
+
+  // Many-to-many: user belongs to many workspaces
+  workspaces Workspace[] @relation("UserWorkspaces")
+
+  // One-to-many: user owns multiple workspaces
+  ownedWorkspaces Workspace[] @relation("OwnedWorkspaces")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -21,11 +26,17 @@ model User {
 model Workspace {
   id        String   @id @default(uuid())
   name      String
-  users     User[]
-  files     File[]
-  invites    WorkspaceInvite[]
+
+  // Many-to-many: workspace has many users
+  users     User[] @relation("UserWorkspaces")
+  
+  // One-to-many: workspace has an owner
   ownerId   String
-  owner     User @relation(fields: [ownerId], references: [id])
+  owner     User @relation("OwnedWorkspaces", fields: [ownerId], references: [id])
+
+  invites    WorkspaceInvite[]
+  files     File[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
