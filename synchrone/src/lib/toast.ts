@@ -7,6 +7,7 @@ export const toast = ({
   title,
   description,
   actionLabel = 'OK',
+  classNames,
   style,
   onClick,
 }: {
@@ -14,6 +15,10 @@ export const toast = ({
   title: string;
   description: string;
   actionLabel?: string;
+  classNames?: {
+    description?: string;
+    icon?: string;
+  };
   style?: React.CSSProperties;
   onClick?: () => void;
 }): void => {
@@ -27,8 +32,10 @@ export const toast = ({
         }
       },
     },
+    position: 'bottom-center',
     classNames: {
       description: '!text-neutral-200',
+      ...classNames,
     },
     style: {
       backgroundColor: '#171717',
@@ -44,6 +51,9 @@ export const toastSuccess = (message: string): void => {
     type: 'success',
     title: 'Успех',
     description: message,
+    classNames: {
+      icon: '!text-green-500',
+    },
     style: {
       borderColor: 'oklch(72.3% 0.219 149.579)',
     },
@@ -55,6 +65,9 @@ export const toastError = (message: string): void => {
     type: 'error',
     title: 'Ошибка',
     description: message,
+    classNames: {
+      icon: '!text-red-500',
+    },
     style: {
       borderColor: 'oklch(63.7% 0.237 25.331)',
     },
