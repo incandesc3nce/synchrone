@@ -1,19 +1,10 @@
 'use client';
 
-import { AuthInputProps } from "@/interfaces/auth";
+import { AuthInputProps } from '@/types/auth';
 
 export const AuthInput = (props: AuthInputProps) => {
-  const {
-    name,
-    type,
-    placeholder,
-    Icon,
-    minLength,
-    maxLength,
-    label,
-    ref,
-    injection,
-  } = props;
+  const { name, type, placeholder, Icon, minLength, maxLength, label, ref, injection } =
+    props;
 
   return (
     <div className="relative">

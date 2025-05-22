@@ -1,4 +1,4 @@
-import { TokenPayload } from '@/interfaces/auth/TokenPayload';
+import { TokenPayload } from '@/types/auth/TokenPayload';
 import { cookies } from 'next/headers';
 import { verifyJWT } from './jwt';
 

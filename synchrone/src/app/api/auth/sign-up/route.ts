@@ -1,4 +1,4 @@
-import { APIResponse } from '@/interfaces/auth/APIResponse';
+import { APIResponse } from '@/types/auth/APIResponse';
 import { setTokenCookie } from '@/lib/auth/cookie';
 import { hashPassword } from '@/lib/auth/hashing';
 import { signJWT } from '@/lib/auth/jwt';
