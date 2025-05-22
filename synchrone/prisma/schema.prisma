@@ -23,6 +23,18 @@ model Workspace {
   name      String
   users     User[]
   files     File[]
+  invites    WorkspaceInvite[]
+  ownerId   String
+  owner     User @relation(fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WorkspaceInvite {
+  id        String   @id @default(uuid())
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+  expiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
