@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(
-      { projects: info, message: 'Успешно создан проект!', success: true },
+      { project: info, message: 'Успешно создан проект!', success: true },
       { status: 201 }
     );
   } catch (error) {

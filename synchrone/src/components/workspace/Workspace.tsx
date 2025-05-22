@@ -44,6 +44,8 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
   };
 
   const handleDeleteProject = async (id: string) => {
+    setData(data?.filter((item) => item.id !== id) || data);
+
     await ClientFetch('/api/workspaces', {
       method: 'DELETE',
       headers: {
@@ -51,8 +53,6 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
       },
       body: JSON.stringify({ id }),
     });
-
-    setData(data?.filter((item) => item.id !== id) || data);
 
     toastSuccess('Проект успешно удалён!');
   };

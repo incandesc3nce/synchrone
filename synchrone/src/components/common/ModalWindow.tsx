@@ -1,10 +1,13 @@
-import { FC } from 'react';
+'use client';
+
+import { FC, useState } from 'react';
 import { Button } from './Button';
+import { SubmitButton } from './SubmitButton';
 
 interface ModalWindowProps {
   setIsModalOpen: (isOpen: boolean) => void;
   buttonText: string;
-  submitHandler: (e: React.FormEvent) => void;
+  submitHandler: (e: React.FormEvent) => Promise<void>;
   formContent?: React.ReactNode;
 }
 
@@ -14,6 +17,8 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   submitHandler,
   formContent,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <div
       className="fixed inset-0 bg-black/50 transition-colors flex justify-center items-center"
@@ -28,11 +33,17 @@ export const ModalWindow: FC<ModalWindowProps> = ({
           onClick={() => setIsModalOpen(false)}>
           X
         </Button>
-        <form className="flex flex-col gap-8" onSubmit={submitHandler}>
+        <form
+          className="flex flex-col gap-8"
+          onSubmit={async (e) => {
+            setIsLoading(true);
+            await submitHandler(e).finally(() => {
+              setIsLoading(false);
+              setIsModalOpen(false);
+            });
+          }}>
           {formContent}
-          <Button variant="contained" type="submit">
-            {buttonText}
-          </Button>
+          <SubmitButton isLoading={isLoading}>{buttonText}</SubmitButton>
         </form>
       </div>
     </div>
