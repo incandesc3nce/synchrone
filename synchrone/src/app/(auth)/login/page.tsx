@@ -32,9 +32,9 @@ export default function LoginPage() {
         email,
         password,
       }),
+    }).finally(() => {
+      setIsLoading(false);
     });
-
-    setIsLoading(false);
 
     if (success) {
       toastSuccess(message);

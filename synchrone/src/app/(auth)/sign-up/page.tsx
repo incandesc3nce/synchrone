@@ -36,9 +36,9 @@ export default function SignUpPage() {
         username,
         password,
       }),
+    }).finally(() => {
+      setIsLoading(false);
     });
-
-    setIsLoading(false);
 
     if (success) {
       toastSuccess(message);
