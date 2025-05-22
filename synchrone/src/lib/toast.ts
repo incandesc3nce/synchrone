@@ -27,6 +27,9 @@ export const toast = ({
         }
       },
     },
+    classNames: {
+      description: '!text-neutral-200',
+    },
     style: {
       backgroundColor: '#171717',
       color: '#fafafa',
