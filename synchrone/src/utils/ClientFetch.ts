@@ -1,4 +1,4 @@
-import { APIResponse } from '@/types/auth/APIResponse';
+import { APIResponse } from '@/types/common/APIResponse';
 
 /**
  * Client-side API fetch wrapper function.

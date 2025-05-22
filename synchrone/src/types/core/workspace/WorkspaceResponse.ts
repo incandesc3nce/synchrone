@@ -1,5 +1,5 @@
-import { Workspace } from '../../../prisma/generated';
-import { APIResponse } from '../auth/APIResponse';
+import { Workspace } from '@prisma/client';
+import { APIResponse } from '../../common/APIResponse';
 
 export type WorkspaceResponse = APIResponse & {
   projects?: Workspace[];

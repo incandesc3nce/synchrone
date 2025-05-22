@@ -2,7 +2,7 @@
 
 import { AuthFormWrapper, AuthInputEmail, AuthInputPassword } from '@/components/auth';
 import { SubmitButton, Typography } from '@/components/common';
-import { APIResponse } from '@/types/auth/APIResponse';
+import { APIResponse } from '@/types/common/APIResponse';
 import { toastSuccess, toastError } from '@/lib/toast';
 import { ClientFetch } from '@/utils/ClientFetch';
 import Link from 'next/link';

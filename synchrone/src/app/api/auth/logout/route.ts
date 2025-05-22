@@ -1,5 +1,5 @@
 import { deleteTokenCookie } from '@/lib/auth/cookie';
-import { APIResponse } from '@/types/auth/APIResponse';
+import { APIResponse } from '@/types/common/APIResponse';
 import { NextResponse } from 'next/server';
 
 export async function POST(): Promise<NextResponse<APIResponse>> {

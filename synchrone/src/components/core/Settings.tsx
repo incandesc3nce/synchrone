@@ -6,7 +6,7 @@ import { AuthFormWrapper, AuthInputEmail, AuthInputPassword } from '../auth';
 import { AuthInputUsername } from '../auth/AuthInputUsername';
 import { SubmitButton } from '../common';
 import { ClientFetch } from '@/utils/ClientFetch';
-import { APIResponse } from '@/types/auth/APIResponse';
+import { APIResponse } from '@/types/common/APIResponse';
 import { toastSuccess, toastError } from '@/lib/toast';
 
 interface SettingsProps {

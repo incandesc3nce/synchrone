@@ -1,6 +1,6 @@
 import { CoreHeader } from '@/components/core/CoreHeader';
 import { Settings } from '@/components/core/Settings';
-import { APIResponse } from '@/types/auth/APIResponse';
+import { APIResponse } from '@/types/common/APIResponse';
 import { UserResponse } from '@/types/core/settings/UserResponse';
 import { ServerFetch } from '@/utils/ServerFetch';
 

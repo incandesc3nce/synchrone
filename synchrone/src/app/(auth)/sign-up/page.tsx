@@ -3,7 +3,7 @@
 import { AuthFormWrapper, AuthInputEmail, AuthInputPassword } from '@/components/auth';
 import { AuthInputUsername } from '@/components/auth/AuthInputUsername';
 import { SubmitButton, Typography } from '@/components/common';
-import { APIResponse } from '@/types/auth/APIResponse';
+import { APIResponse } from '@/types/common/APIResponse';
 import { toastError, toastSuccess } from '@/lib/toast';
 import { ClientFetch } from '@/utils/ClientFetch';
 import Link from 'next/link';

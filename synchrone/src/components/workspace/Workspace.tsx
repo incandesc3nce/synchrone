@@ -7,7 +7,7 @@ import { Edit } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import type { Workspace as WorkspaceObject } from '../../../prisma/generated';
 import { CreateProjectButton } from './CreateProjectButton';
-import { WorkspaceResponse } from '@/types/workspace/WorkspaceResponse';
+import { WorkspaceResponse } from '@/types/core/workspace/WorkspaceResponse';
 import { toastSuccess } from '@/lib/toast';
 
 export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) => {
@@ -139,7 +139,7 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
                   </Button>
                 </div>
                 <Button variant="contained">
-                  <a href="/editor" className="size-full">
+                  <a href={`/editor/${item.id}`} className="size-full">
                     Перейти
                   </a>
                 </Button>
