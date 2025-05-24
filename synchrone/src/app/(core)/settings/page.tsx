@@ -9,7 +9,7 @@ export default async function SettingsPage() {
     APIResponse & {
       user: UserResponse;
     }
-  >('http://localhost:3000/api/user', {
+  >(`${process.env.BASE_URL}/api/user`, {
     method: 'GET',
   });
 
