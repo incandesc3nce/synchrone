@@ -73,3 +73,17 @@ export const toastError = (message: string): void => {
     },
   });
 };
+
+export const toastInfo = (title: string, message: string): void => {
+  toast({
+    type: 'info',
+    title: title,
+    description: message,
+    classNames: {
+      icon: '!text-blue-500',
+    },
+    style: {
+      borderColor: 'oklch(72.3% 0.219 149.579)',
+    },
+  });
+};
