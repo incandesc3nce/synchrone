@@ -83,7 +83,7 @@ export const toastInfo = (title: string, message: string): void => {
       icon: '!text-blue-500',
     },
     style: {
-      borderColor: 'oklch(72.3% 0.219 149.579)',
+      borderColor: 'oklch(0.623 0.214 259.815)',
     },
   });
 };
