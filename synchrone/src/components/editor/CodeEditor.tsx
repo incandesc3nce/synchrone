@@ -3,14 +3,10 @@
 import CodeMirror, { oneDarkTheme } from '@uiw/react-codemirror';
 import { langs } from '@uiw/codemirror-extensions-langs';
 import { basicSetup } from '@uiw/codemirror-extensions-basic-setup';
-import { RefObject, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSocket } from '@/hooks/common';
 
-interface CodeEditorProps {
-  codeRef: RefObject<string>;
-}
-
-export const CodeEditor = ({ codeRef }: CodeEditorProps) => {
+export const CodeEditor = () => {
   const io = useSocket();
   const [doc, setDoc] = useState(io.value);
 
@@ -22,8 +18,7 @@ export const CodeEditor = ({ codeRef }: CodeEditorProps) => {
 
   useEffect(() => {
     setDoc(io.value);
-    codeRef.current = io.value;
-  }, [io.value, codeRef]);
+  }, [io.value]);
 
   return (
     <>
@@ -35,7 +30,6 @@ export const CodeEditor = ({ codeRef }: CodeEditorProps) => {
           value={doc}
           onChange={(value) => {
             setDoc(value);
-            codeRef.current = value;
             handleCodeChange(value);
           }}
           height="100%"
