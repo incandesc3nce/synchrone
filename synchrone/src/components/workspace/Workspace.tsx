@@ -3,7 +3,7 @@ import { Button, Typography } from '@/components/common';
 import { Loader } from '@/components/common/Loader';
 import { ModalWindow } from '@/components/common/ModalWindow';
 import { ClientFetch } from '@/utils/ClientFetch';
-import { Edit } from 'lucide-react';
+import { Edit, X } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { CreateProjectButton } from './CreateProjectButton';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/types/core/workspace/WorkspaceResponse';
 import { toastSuccess } from '@/lib/toast';
 import { WorkspaceUser } from './WorkspaceUser';
+import { InviteUserButton } from './InviteUserButton';
 
 export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) => {
   const [data, setData] = useState<WorkspaceWithUsers[] | null>(null);
@@ -174,13 +175,16 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
                       </div>
                     </details>
                   </div>
-                  <Button
-                    variant="text"
-                    type="button"
-                    className="text-red-500 font-semibold absolute top-0 right-0"
-                    onClick={() => handleDeleteProject(item.id)}>
-                    X
-                  </Button>
+                  <div className="absolute top-1 right-1 flex items-center gap-2">
+                    <InviteUserButton workspaceId={item.id} />
+                    <Button
+                      variant="custom"
+                      type="button"
+                      className="text-red-500 font-semibold cursor-pointer"
+                      onClick={() => handleDeleteProject(item.id)}>
+                      <X  className='size-5'/>
+                    </Button>
+                  </div>
                 </div>
                 <Button variant="contained">
                   <a href={`/editor/${item.id}`} className="size-full">
