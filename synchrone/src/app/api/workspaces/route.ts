@@ -151,6 +151,12 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
 
+    await prisma.file.deleteMany({
+      where: {
+        workspaceId: id,
+      },
+    });
+
     await prisma.workspace.delete({
       where: {
         id,
