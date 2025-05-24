@@ -7,12 +7,12 @@ import { useEffect, useState } from 'react';
 import { useSocket } from '@/hooks/common';
 
 export const CodeEditor = () => {
-  const io = useSocket();
+  const { io } = useSocket();
   const [doc, setDoc] = useState(io.value);
 
   const handleCodeChange = (value: string) => {
     if (io.socket?.connected) {
-      io.send({ message: value, type: 'code' });
+      io.send('file:edit', { message: value, type: 'code' });
     }
   };
 

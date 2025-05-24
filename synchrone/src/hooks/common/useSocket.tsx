@@ -1,10 +1,14 @@
 import { WSMessage } from '@/types/common';
+import {
+  WorkspaceEditor,
+  WorkspaceWithFiles,
+} from '@/types/core/workspace/WorkspaceResponse';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 export type SocketState = 'connecting' | 'connected' | 'disconnected';
 
-export const useSocketConnection = () => {
+export const useSocketConnection = (workspaceId: string) => {
   const socketRef = useRef<Socket | null>(null);
   const [value, setValue] = useState<string>('');
   const [status, setStatus] = useState<SocketState>('connecting');
@@ -34,14 +38,16 @@ export const useSocketConnection = () => {
       setValue(data.message);
     });
 
+    socketRef.current.emit('workspace:join', workspaceId);
+
     return () => {
       console.log('Disconnecting from socket server...');
       socketRef.current?.disconnect();
     };
   }, []);
 
-  const send = (data: WSMessage) => {
-    socketRef.current?.emit('message', data);
+  const send = (event: string, data: WSMessage) => {
+    socketRef.current?.emit(event, data);
   };
 
   return {
@@ -53,12 +59,25 @@ export const useSocketConnection = () => {
   };
 };
 
-const SocketContext = createContext<ReturnType<typeof useSocketConnection> | null>(null);
+const SocketContext = createContext<{
+  io: ReturnType<typeof useSocketConnection>;
+  workspace: WorkspaceWithFiles;
+} | null>(null);
 
-export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const socket = useSocketConnection();
-
-  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
+export const SocketProvider = ({
+  workspaceResponse,
+  children,
+}: {
+  workspaceResponse: WorkspaceEditor;
+  children: React.ReactNode;
+}) => {
+  const io = useSocketConnection(workspaceResponse.workspace.id);
+  console.log(workspaceResponse.workspace);
+  return (
+    <SocketContext.Provider value={{ io, workspace: workspaceResponse.workspace }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
 export const useSocket = () => {
