@@ -21,11 +21,13 @@ export const Button = (props: ButtonProps) => {
   const { variant, type = 'button', children, className, disabled, onClick } = props;
   const buttonClass = buttonVariants[variant];
 
+  const baseClassName = variant === 'custom' ? '' : 'py-2 px-4 rounded-2xl cursor-pointer transition-colors duration-150 font-medium ';
+
   return (
     <button
       type={type}
       className={
-        'py-2 px-4 rounded-2xl cursor-pointer transition-colors duration-150 font-medium ' +
+        baseClassName +
         buttonClass +
         (className ? ` ${className}` : '')
       }
