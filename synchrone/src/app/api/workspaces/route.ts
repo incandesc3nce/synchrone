@@ -22,6 +22,13 @@ export async function GET(req: NextRequest) {
         },
       },
       include: {
+        owner: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
         users: {
           select: {
             id: true,

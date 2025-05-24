@@ -13,8 +13,15 @@ import {
 import { toastSuccess } from '@/lib/toast';
 import { WorkspaceUser } from './WorkspaceUser';
 import { InviteUserButton } from './InviteUserButton';
+import { TokenPayload } from '@/types/auth/TokenPayload';
 
-export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) => {
+export const Workspace = ({
+  promise,
+  currentUser,
+}: {
+  promise: Promise<WorkspaceResponse>;
+  currentUser: TokenPayload | null;
+}) => {
   const [data, setData] = useState<WorkspaceWithUsers[] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
@@ -121,9 +128,9 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
             data.map((item) => (
               <div
                 key={item.id}
-                className="relative flex flex-col justify-between p-4 bg-neutral-800 rounded-lg max-h-42 w-80">
+                className="relative flex flex-col justify-between p-4 bg-neutral-800 rounded-lg h-fit w-80">
                 <div>
-                  <div className="flex items-start flex-col">
+                  <div className="flex items-start flex-col pb-4">
                     <div className="flex items-center">
                       <Typography variant="h4">{item.name}</Typography>
                       <Button
@@ -167,6 +174,8 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
                         {item.users.map((user) => (
                           <WorkspaceUser
                             user={user}
+                            ownerId={item.owner.id}
+                            isOwner={currentUser?.id === item.owner.id}
                             workspaceId={item.id}
                             handleDeleteUser={handleDeleteUser}
                             key={`${item.id}_${user.id}`}
@@ -182,7 +191,7 @@ export const Workspace = ({ promise }: { promise: Promise<WorkspaceResponse> }) 
                       type="button"
                       className="text-red-500 font-semibold cursor-pointer"
                       onClick={() => handleDeleteProject(item.id)}>
-                      <X  className='size-5'/>
+                      <X className="size-5" />
                     </Button>
                   </div>
                 </div>

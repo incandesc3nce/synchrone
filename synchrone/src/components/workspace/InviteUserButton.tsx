@@ -4,8 +4,6 @@ import { FC } from 'react';
 import { Button } from '../common';
 import { UserRoundPlus } from 'lucide-react';
 import { toastError, toastInfo } from '@/lib/toast';
-import { ClientFetch } from '@/utils/ClientFetch';
-import { APIResponse } from '@/types/common/APIResponse';
 
 interface InviteUserButtonProps {
   workspaceId: string;
@@ -13,15 +11,7 @@ interface InviteUserButtonProps {
 
 export const InviteUserButton: FC<InviteUserButtonProps> = ({ workspaceId }) => {
   const handleInviteUser = async () => {
-    const res = await ClientFetch<
-      APIResponse & {
-        inviteLinkId: string;
-      }
-    >(`/api/workspaces/invite/${workspaceId}`, {
-      method: 'POST',
-    });
-    
-    const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/workspaces/invite/${res.inviteLinkId}`;
+    const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/workspaces/invite/${workspaceId}`;
 
     try {
       await navigator.clipboard.writeText(inviteUrl);
