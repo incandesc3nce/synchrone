@@ -1,10 +1,10 @@
 import { WSMessage } from '@/types/common';
-import { useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-type SocketState = 'connecting' | 'connected' | 'disconnected';
+export type SocketState = 'connecting' | 'connected' | 'disconnected';
 
-export const useSocket = () => {
+export const useSocketConnection = () => {
   const socketRef = useRef<Socket | null>(null);
   const [value, setValue] = useState<string>('');
   const [status, setStatus] = useState<SocketState>('connecting');
@@ -51,4 +51,21 @@ export const useSocket = () => {
     send,
     status,
   };
+};
+
+const SocketContext = createContext<ReturnType<typeof useSocketConnection> | null>(null);
+
+export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
+  const socket = useSocketConnection();
+
+  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
+};
+
+export const useSocket = () => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+
+  return context;
 };
