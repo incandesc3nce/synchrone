@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
       include: {
         users: {
           select: {
+            id: true,
             username: true,
             email: true,
           },
