@@ -16,7 +16,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const workspaceId = req.nextUrl.pathname.split('/').pop();
     if (!workspaceId) {
       return NextResponse.json(
-        { message: 'ID is required', success: false },
+        { message: 'Необходим ID проекта', success: false },
         { status: 400 }
       );
     }
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     if (!workspace) {
       return NextResponse.json(
-        { message: 'Workspace not found', success: false },
+        { message: 'Проект не найден', success: false },
         { status: 404 }
       );
     }
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     if (userInWorkspace) {
       return NextResponse.json(
-        { message: 'User already in workspace', success: false },
+        { message: 'Пользователь уже состоит в проекте', success: false },
         { status: 400 }
       );
     }
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     if (!inviteLink) {
       return NextResponse.json(
-        { message: 'Invite link not found', success: false },
+        { message: 'Приглашение не найдено', success: false },
         { status: 404 }
       );
     }
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // check if invite link is expired
     if (inviteLink.expiresAt < new Date()) {
       return NextResponse.json(
-        { message: 'Invite link expired', success: false },
+        { message: 'Срок приглашения истек', success: false },
         { status: 400 }
       );
     }
@@ -87,7 +87,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     });
 
     return NextResponse.json(
-      { message: 'User added to workspace successfully', success: true },
+      { message: 'Пользователь успешно добавлен в проект', success: true },
       { status: 200 }
     );
   } catch (error) {
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const { workspaceId } = await req.json();
 
     if (!workspaceId) {
-      return NextResponse.json({ message: 'ID is required' }, { status: 400 });
+      return NextResponse.json({ message: 'ID проекта необходим' }, { status: 400 });
     }
 
     // check if workspace belongs to user
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     if (!workspace) {
-      return NextResponse.json({ message: 'Workspace not found' }, { status: 404 });
+      return NextResponse.json({ message: 'Проект не найден' }, { status: 404 });
     }
 
     const userInWorkspace = workspace.users.find((u) => u.id === user.id);
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     if (!userInWorkspace && !isOwner) {
       return NextResponse.json(
-        { message: 'User not found in workspace' },
+        { message: 'Пользователь не найден в проекте' },
         { status: 404 }
       );
     }
@@ -152,7 +152,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     return NextResponse.json(
-      { inviteLink, message: 'Invite link created successfully', success: true },
+      { inviteLink, message: 'Приглашение успешно создано', success: true },
       { status: 200 }
     );
   } catch (error) {
