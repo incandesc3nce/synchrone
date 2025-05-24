@@ -107,10 +107,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const { workspaceId } = await req.json();
+    const workspaceId = req.nextUrl.pathname.split('/').pop();
 
     if (!workspaceId) {
-      return NextResponse.json({ message: 'ID проекта необходим' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'ID проекта необходим', success: false },
+        { status: 400 }
+      );
     }
 
     // check if workspace belongs to user
@@ -152,7 +155,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     return NextResponse.json(
-      { inviteLink, message: 'Приглашение успешно создано', success: true },
+      {
+        inviteLinkId: inviteLink.id,
+        message: 'Приглашение успешно создано',
+        success: true,
+      },
       { status: 200 }
     );
   } catch (error) {
