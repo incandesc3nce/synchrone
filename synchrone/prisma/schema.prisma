@@ -36,6 +36,7 @@ model Workspace {
 
   invites    WorkspaceInvite[]
   files     File[]
+  folders   Folder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -54,8 +55,29 @@ model File {
   id        String   @id @default(uuid())
   name      String
   content   String
+
   workspace Workspace @relation(fields: [workspaceId], references: [id])
   workspaceId String
+
+  folder Folder? @relation(fields: [folderId], references: [id])
+  folderId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  name      String
+  parentId String?
+  parent Folder? @relation("FolderHierarchy", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderHierarchy")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+
+  files    File[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
