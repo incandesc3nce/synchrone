@@ -9,7 +9,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { message: 'Unauthorized', success: false },
+      { status: 401 }
+    );
   }
 
   try {
@@ -25,7 +28,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     });
 
     if (!userData) {
-      return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'Пользователь не найден', success: false },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(
@@ -45,7 +51,10 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { message: 'Unauthorized', success: false },
+      { status: 401 }
+    );
   }
 
   try {
@@ -87,7 +96,10 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     });
 
     if (!updatedUser) {
-      return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'Пользователь не найден', success: false },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(

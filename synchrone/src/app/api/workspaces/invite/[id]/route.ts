@@ -6,13 +6,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { message: 'Unauthorized', success: false },
+      { status: 401 }
+    );
   }
 
   try {
     const workspaceId = req.nextUrl.pathname.split('/').pop();
     if (!workspaceId) {
-      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'ID is required', success: false },
+        { status: 400 }
+      );
     }
 
     const workspace = await prisma.workspace.findUnique({
@@ -29,13 +35,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     });
 
     if (!workspace) {
-      return NextResponse.json({ error: 'Workspace not found' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'Workspace not found', success: false },
+        { status: 404 }
+      );
     }
 
     const userInWorkspace = workspace.users.find((u) => u.id === user.id);
 
     if (userInWorkspace) {
-      return NextResponse.json({ error: 'User already in workspace' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'User already in workspace', success: false },
+        { status: 400 }
+      );
     }
 
     // check if invite link exists
@@ -46,12 +58,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     });
 
     if (!inviteLink) {
-      return NextResponse.json({ error: 'Invite link not found' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'Invite link not found', success: false },
+        { status: 404 }
+      );
     }
 
     // check if invite link is expired
     if (inviteLink.expiresAt < new Date()) {
-      return NextResponse.json({ error: 'Invite link expired' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'Invite link expired', success: false },
+        { status: 400 }
+      );
     }
 
     // add user to workspace
@@ -67,14 +85,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         },
       },
     });
-    
+
     return NextResponse.json(
       { message: 'User added to workspace successfully', success: true },
       { status: 200 }
     );
   } catch (error) {
     console.error('Error processing invite request:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Internal Server Error', success: false },
+      { status: 500 }
+    );
   }
 }
 
@@ -82,14 +103,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     const { workspaceId } = await req.json();
 
     if (!workspaceId) {
-      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+      return NextResponse.json({ message: 'ID is required' }, { status: 400 });
     }
 
     // check if workspace belongs to user
@@ -108,7 +129,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     if (!workspace) {
-      return NextResponse.json({ error: 'Workspace not found' }, { status: 404 });
+      return NextResponse.json({ message: 'Workspace not found' }, { status: 404 });
     }
 
     const userInWorkspace = workspace.users.find((u) => u.id === user.id);
@@ -116,7 +137,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const isOwner = workspace.ownerId === user.id;
 
     if (!userInWorkspace && !isOwner) {
-      return NextResponse.json({ error: 'User not found in workspace' }, { status: 404 });
+      return NextResponse.json(
+        { message: 'User not found in workspace' },
+        { status: 404 }
+      );
     }
 
     // create invite link
@@ -133,6 +157,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   } catch (error) {
     console.error('Error processing invite request:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Internal Server Error', success: false },
+      { status: 500 }
+    );
   }
 }

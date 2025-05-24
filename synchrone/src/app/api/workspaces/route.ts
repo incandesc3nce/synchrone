@@ -6,7 +6,10 @@ export async function GET(req: NextRequest) {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { message: 'Unauthorized', success: false },
+      { status: 401 }
+    );
   }
 
   try {
@@ -45,7 +48,10 @@ export async function POST(req: NextRequest) {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { message: 'Unauthorized', success: false },
+      { status: 401 }
+    );
   }
 
   try {
@@ -88,7 +94,10 @@ export async function PATCH(req: NextRequest) {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { message: 'Unauthorized', success: false },
+      { status: 401 }
+    );
   }
 
   try {
@@ -125,7 +134,10 @@ export async function DELETE(req: NextRequest) {
   const { token, user } = await getCurrentTokenAPI(req);
 
   if (!token || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { message: 'Unauthorized', success: false },
+      { status: 401 }
+    );
   }
 
   try {
