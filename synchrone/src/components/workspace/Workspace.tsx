@@ -174,8 +174,8 @@ export const Workspace = ({
                         {item.users.map((user) => (
                           <WorkspaceUser
                             user={user}
-                            ownerId={item.owner.id}
-                            isOwner={currentUser?.id === item.owner.id}
+                            ownerId={item.owner?.id ?? ''}
+                            isOwner={currentUser?.id === item.owner?.id}
                             workspaceId={item.id}
                             handleDeleteUser={handleDeleteUser}
                             key={`${item.id}_${user.id}`}
