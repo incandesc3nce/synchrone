@@ -8,9 +8,13 @@ import { ButtonVariant } from '@/types/components/ButtonVariant';
 
 interface LogoutButtonProps {
   variant?: ButtonVariant;
+  className?: string;
 }
 
-export const LogoutButton: FC<LogoutButtonProps> = ({ variant = 'contained' }) => {
+export const LogoutButton: FC<LogoutButtonProps> = ({
+  variant = 'contained',
+  className,
+}) => {
   const router = useRouter();
   const handleLogout = async () => {
     await ClientFetch('/api/auth/logout', {
@@ -20,7 +24,7 @@ export const LogoutButton: FC<LogoutButtonProps> = ({ variant = 'contained' }) =
   };
 
   return (
-    <Button variant={variant} onClick={handleLogout}>
+    <Button variant={variant} onClick={handleLogout} className={className}>
       Выйти
     </Button>
   );

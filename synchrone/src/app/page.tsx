@@ -1,7 +1,7 @@
 import { Header } from '@/components/common';
 import { FeaturesSection, HeroSection, QuestionsSection } from '@/components/landing';
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <div className="font-raleway">
       <Header />
