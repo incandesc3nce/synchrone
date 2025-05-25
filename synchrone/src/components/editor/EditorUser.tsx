@@ -1,24 +1,22 @@
-import { FC, useMemo, useState } from 'react';
-import { getRandomColor } from '@/utils/getRandomColor';
+import { FC, useMemo } from 'react';
 import { isDarkColor } from '@/utils/isDarkColor';
-import { TokenPayload } from '@/types/auth/TokenPayload';
+import { TokenPayloadWithColor } from '@/types/auth/TokenPayload';
 
 interface EditorUserProps {
-  user: TokenPayload;
+  user: TokenPayloadWithColor;
 }
 
 export const EditorUser: FC<EditorUserProps> = ({ user }) => {
-  const [color] = useState(getRandomColor());
   const isDark = useMemo(() => {
-    return isDarkColor(color);
-  }, [color]);
+    return isDarkColor(user.color);
+  }, [user.color]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-1">
       <div
         className="size-10 rounded-full flex items-center justify-center"
         style={{
-          backgroundColor: color,
+          backgroundColor: user.color,
         }}>
         <span
           style={{

@@ -3,3 +3,7 @@ export interface TokenPayload {
   email: string;
   username: string;
 }
+
+export type TokenPayloadWithColor = TokenPayload & {
+  color: string;
+};

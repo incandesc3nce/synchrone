@@ -1,4 +1,4 @@
-import { TokenPayload } from '@/types/auth/TokenPayload';
+import { TokenPayload, TokenPayloadWithColor } from '@/types/auth/TokenPayload';
 import { WSMessage } from '@/types/common';
 import {
   WorkspaceEditor,
@@ -13,7 +13,7 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
   const socketRef = useRef<Socket | null>(null);
   const [value, setValue] = useState<string>('');
   const [status, setStatus] = useState<SocketState>('connecting');
-  const [currentUsers, setCurrentUsers] = useState<TokenPayload[]>([]);
+  const [currentUsers, setCurrentUsers] = useState<TokenPayloadWithColor[]>([]);
 
   useEffect(() => {
     console.log('Connecting to socket server...');
@@ -40,23 +40,55 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
       setValue(data.message);
     });
 
-    socketRef.current.on(
-      'workspace:joined',
-      (data: { workspaceId: string; users: TokenPayload[] }) => {
-        console.log('Workspace joined:', data);
-        if (data.workspaceId === workspaceId) {
-          setCurrentUsers(data.users);
-        }
+    const userEvent = (
+      data: { workspaceId: string; users: TokenPayloadWithColor[] },
+      event: 'join' | 'leave'
+    ) => {
+      console.log(`Workspace ${event === 'join' ? 'joined' : 'left'}:`, data);
+      if (data.workspaceId === workspaceId) {
+        setCurrentUsers(data.users);
       }
-    );
+    };
+
+    socketRef.current.on('workspace:joined', (data) => userEvent(data, 'join'));
+
+    socketRef.current.on('workspace:left', (data) => userEvent(data, 'leave'));
 
     socketRef.current.emit('workspace:join', { workspaceId, user });
 
-    return () => {
-      console.log('Disconnecting from socket server...');
-      socketRef.current?.disconnect();
+    const handleBeforeUnload = () => {
+      console.log('Window is closing, disconnecting from socket server...');
+      socketRef.current?.emit(
+        'workspace:leave',
+        {
+          workspaceId,
+          user,
+        },
+        () => {
+          socketRef.current?.removeAllListeners();
+          socketRef.current?.disconnect();
+        }
+      );
     };
-  }, []);
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      console.log('Disconnecting from socket server...');
+      socketRef.current?.emit(
+        'workspace:leave',
+        {
+          workspaceId,
+          user,
+        },
+        () => {
+          socketRef.current?.removeAllListeners();
+          socketRef.current?.disconnect();
+        }
+      );
+    };
+  }, [user, workspaceId]);
 
   const send = (event: string, data: WSMessage) => {
     socketRef.current?.emit(event, data);
