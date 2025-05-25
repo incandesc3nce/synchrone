@@ -133,16 +133,18 @@ export const Workspace = ({
                   <div className="flex items-start flex-col pb-4">
                     <div className="flex items-center">
                       <Typography variant="h4">{item.name}</Typography>
-                      <Button
-                        variant="text"
-                        type="button"
-                        className="font-semibold p-2!"
-                        onClick={() => {
-                          setIsModalOpen(true);
-                          setProjectName(item.name);
-                        }}>
-                        <Edit size={20} />
-                      </Button>
+                      {item.owner?.id === currentUser?.id && (
+                        <Button
+                          variant="text"
+                          type="button"
+                          className="font-semibold p-2!"
+                          onClick={() => {
+                            setIsModalOpen(true);
+                            setProjectName(item.name);
+                          }}>
+                          <Edit size={20} />
+                        </Button>
+                      )}
                       {isModalOpen && (
                         <ModalWindow
                           setIsModalOpen={setIsModalOpen}
@@ -184,19 +186,21 @@ export const Workspace = ({
                       </div>
                     </details>
                   </div>
-                  <div className="absolute top-1 right-1 flex items-center gap-2">
-                    <InviteUserButton workspaceId={item.id} />
-                    <Button
-                      variant="custom"
-                      type="button"
-                      className="text-red-500 font-semibold cursor-pointer"
-                      onClick={() => handleDeleteProject(item.id)}>
-                      <X className="size-5" />
-                    </Button>
-                  </div>
+                  {item.owner?.id === currentUser?.id && (
+                    <div className="absolute top-1 right-1 flex items-center gap-2">
+                      <InviteUserButton workspaceId={item.id} />
+                      <Button
+                        variant="custom"
+                        type="button"
+                        className="text-red-500 font-semibold cursor-pointer"
+                        onClick={() => handleDeleteProject(item.id)}>
+                        <X className="size-5" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <Button variant="contained">
-                  <a href={`/editor/${item.id}`} className="size-full">
+                  <a href={`/editor/${item.id}`} className="size-full block">
                     Перейти
                   </a>
                 </Button>
