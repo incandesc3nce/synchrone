@@ -4,16 +4,13 @@ import { Typography } from '../common';
 export const SaveContent = () => {
   const { isLoading, isSaved } = useContentSave();
 
-  const getLabel = () => {
-    if (isLoading) return 'Сохранение...';
-    if (isSaved === 'success') return 'Сохранено!';
-    if (isSaved === 'failure') return 'Ошибка сохранения!';
-    return '';
-  };
+  const label = isLoading ? 'Сохранение...' :
+    isSaved === 'success' ? 'Сохранено!' :
+    isSaved === 'failure' ? 'Ошибка сохранения!' : '';
 
   return (
     <Typography variant="p" className="text-gray-400">
-      {getLabel()}
+      {label}
     </Typography>
   );
 };

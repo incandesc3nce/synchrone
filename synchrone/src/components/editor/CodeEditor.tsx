@@ -30,7 +30,11 @@ export const CodeEditor = () => {
           }}
           height="100%"
           theme={'dark'}
-          extensions={[basicSetup({ foldGutter: false }), langs[lang](), oneDarkTheme]}
+          extensions={[
+            basicSetup({ foldGutter: false }),
+            langs[lang](),
+            oneDarkTheme
+          ]}
         />
       )}
     </>

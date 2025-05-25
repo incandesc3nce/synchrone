@@ -17,10 +17,8 @@ export const useSocketConnection = (
   user: TokenPayload
 ) => {
   const socketRef = useRef<Socket | null>(null);
-  const [content, setContent] = useState<string>(workspace.content);
-  const [language, setLanguage] = useState<ProgrammingLanguage>(
-    workspace.language as ProgrammingLanguage
-  );
+  const [content, setContent] = useState<string>('');
+  const [language, setLanguage] = useState<ProgrammingLanguage>('javascript');
   const [status, setStatus] = useState<SocketState>('connecting');
   const [currentUsers, setCurrentUsers] = useState<TokenPayloadWithColor[]>([]);
 
@@ -65,12 +63,19 @@ export const useSocketConnection = (
     );
 
     const userEvent = (
-      data: { workspaceId: string; users: TokenPayloadWithColor[] },
+      data: {
+        workspaceId: string;
+        users: TokenPayloadWithColor[];
+        content: string;
+        language: ProgrammingLanguage;
+      },
       event: 'join' | 'leave'
     ) => {
       console.log(`Workspace ${event === 'join' ? 'joined' : 'left'}:`, data);
       if (data.workspaceId === workspace.id) {
         setCurrentUsers(data.users);
+        setContent(data.content);
+        setLanguage(data.language);
       }
     };
 
@@ -78,7 +83,12 @@ export const useSocketConnection = (
 
     socketRef.current.on('workspace:left', (data) => userEvent(data, 'leave'));
 
-    socketRef.current.emit('workspace:join', { workspaceId: workspace.id, user });
+    socketRef.current.emit('workspace:join', {
+      workspaceId: workspace.id,
+      user,
+      language,
+      content,
+    });
 
     socketRef.current.on('workspace:languageChanged', (data) => {
       console.log('Language changed:', data);
@@ -148,8 +158,8 @@ export const useSocketConnection = (
   const handleContentChange = (value: string) => {
     if (socketRef.current?.connected) {
       socketRef.current.emit('workspace:edit', {
-        message: value,
-        type: 'code',
+        workspaceId: workspace.id,
+        content: value,
       });
     }
   };
@@ -166,6 +176,8 @@ export const useSocketConnection = (
     setLanguage,
     handleChangeLanguage,
     handleContentChange,
+    user,
+    workspace,
   };
 };
 
