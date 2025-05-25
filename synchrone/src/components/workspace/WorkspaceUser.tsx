@@ -19,24 +19,28 @@ export const WorkspaceUser: FC<WorkspaceUserProps> = ({
   handleDeleteUser,
 }) => {
   return (
-    <div className="flex gap-2">
-      <span>
-        {user.username} ({user.email})
-      </span>
-      <div className='flex items-center'>
-        {user.id === ownerId ? (
-          <span className="text-gray-500">(Владелец)</span>
-        ) : (
-          <span className="text-gray-500">(Участник)</span>
+    <div className="flex gap-2 justify-between">
+      <div>
+        <span>
+          {user.username} ({user.email})
+        </span>
+      </div>
+      <div className='flex gap-2'>
+        <div className='flex items-center'>
+          {user.id === ownerId ? (
+            <span className="text-gray-500">(Владелец)</span>
+          ) : (
+            <span className="text-gray-500">(Участник)</span>
+          )}
+        </div>
+        {isOwner && (
+          <button
+            className="text-red-500 cursor-pointer"
+            onClick={() => handleDeleteUser(user.id, workspaceId)}>
+            x
+          </button>
         )}
       </div>
-      {isOwner && (
-        <button
-          className="text-red-500 cursor-pointer"
-          onClick={() => handleDeleteUser(user.id, workspaceId)}>
-          x
-        </button>
-      )}
     </div>
   );
 };

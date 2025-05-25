@@ -39,8 +39,19 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    const sortedProjects = info.map((project) => ({
+      ...project,
+      users: project.users.sort((a, b) => {
+        // Owner comes first
+        if (a.id === project.owner.id) return -1;
+        if (b.id === project.owner.id) return 1;
+        // Then sort alphabetically by username
+        return a.username.localeCompare(b.username);
+      }),
+    }));
+
     return NextResponse.json(
-      { projects: info, message: 'Получены проекты', success: true },
+      { projects: sortedProjects, message: 'Получены проекты', success: true },
       { status: 200 }
     );
   } catch (error) {
