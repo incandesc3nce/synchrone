@@ -15,9 +15,21 @@ io.on('connection', (socket) => {
   // ---------- Workspace ----------
 
   // Join workspace
-  socket.on('workspace:join', (workspaceId) => {
+  socket.on('workspace:join', (data) => {
+    const { workspaceId, user } = data;
     socket.join(`workspace:${workspaceId}`);
+
+    roomUsers.set(`workspace:${workspaceId}`, [
+      ...(roomUsers.get(`workspace:${workspaceId}`) || []),
+      user,
+    ]);
+    
     logAction(`🧑‍💻 Client joined workspace ${workspaceId}`, io.engine.clientsCount);
+
+    socket.emit('workspace:joined', {
+      workspaceId,
+      users: roomUsers.get(`workspace:${workspaceId}`) || [],
+    });
   });
 
   // All CRUD events for workspace are first ran on the server and then broadcasted to all clients in the workspace room to ensure

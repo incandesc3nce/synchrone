@@ -1,3 +1,4 @@
+import { TokenPayload } from '@/types/auth/TokenPayload';
 import { WSMessage } from '@/types/common';
 import {
   WorkspaceEditor,
@@ -8,10 +9,11 @@ import { io, Socket } from 'socket.io-client';
 
 export type SocketState = 'connecting' | 'connected' | 'disconnected';
 
-export const useSocketConnection = (workspaceId: string) => {
+export const useSocketConnection = (workspaceId: string, user: TokenPayload) => {
   const socketRef = useRef<Socket | null>(null);
   const [value, setValue] = useState<string>('');
   const [status, setStatus] = useState<SocketState>('connecting');
+  const [currentUsers, setCurrentUsers] = useState<TokenPayload[]>([]);
 
   useEffect(() => {
     console.log('Connecting to socket server...');
@@ -38,7 +40,17 @@ export const useSocketConnection = (workspaceId: string) => {
       setValue(data.message);
     });
 
-    socketRef.current.emit('workspace:join', workspaceId);
+    socketRef.current.on(
+      'workspace:joined',
+      (data: { workspaceId: string; users: TokenPayload[] }) => {
+        console.log('Workspace joined:', data);
+        if (data.workspaceId === workspaceId) {
+          setCurrentUsers(data.users);
+        }
+      }
+    );
+
+    socketRef.current.emit('workspace:join', { workspaceId, user });
 
     return () => {
       console.log('Disconnecting from socket server...');
@@ -56,6 +68,8 @@ export const useSocketConnection = (workspaceId: string) => {
     setValue,
     send,
     status,
+    currentUsers,
+    setCurrentUsers,
   };
 };
 
@@ -66,13 +80,15 @@ const SocketContext = createContext<{
 
 export const SocketProvider = ({
   workspaceResponse,
+  user,
   children,
 }: {
   workspaceResponse: WorkspaceEditor;
+  user: TokenPayload;
   children: React.ReactNode;
 }) => {
-  const io = useSocketConnection(workspaceResponse.workspace.id);
-  console.log(workspaceResponse.workspace);
+  const io = useSocketConnection(workspaceResponse.workspace.id, user);
+
   return (
     <SocketContext.Provider value={{ io, workspace: workspaceResponse.workspace }}>
       {children}
