@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import 'dotenv/config';
-import { logAction } from './utils.js';
+import { logAction, getRandomColor } from './utils.js';
 
 const io = new Server(8080, {
   cors: {
@@ -17,19 +17,25 @@ io.on('connection', (socket) => {
   // Join workspace
   socket.on('workspace:join', (data) => {
     const { workspaceId, user } = data;
-    socket.join(`workspace:${workspaceId}`);
+    socket.join(`workspace:${workspaceId}`); // check if the user is already in the room
+    const existingUsers = roomUsers.get(`workspace:${workspaceId}`) || [];
+    if (!existingUsers.some((u) => u.id === user.id)) {
+      roomUsers.set(`workspace:${workspaceId}`, [
+        ...(roomUsers.get(`workspace:${workspaceId}`) || []),
+        {...user, color: getRandomColor() },
+      ]);
+    }
 
-    roomUsers.set(`workspace:${workspaceId}`, [
-      ...(roomUsers.get(`workspace:${workspaceId}`) || []),
-      user,
-    ]);
-    
-    logAction(`🧑‍💻 Client joined workspace ${workspaceId}`, io.engine.clientsCount);
-
-    socket.emit('workspace:joined', {
+    // Emit to all clients in the room INCLUDING the sender
+    io.to(`workspace:${workspaceId}`).emit('workspace:joined', {
       workspaceId,
       users: roomUsers.get(`workspace:${workspaceId}`) || [],
     });
+
+    logAction(
+      `🧑‍💻 Client ${user.username} joined workspace ${workspaceId}`,
+      io.engine.clientsCount
+    );
   });
 
   // All CRUD events for workspace are first ran on the server and then broadcasted to all clients in the workspace room to ensure
@@ -57,6 +63,20 @@ io.on('connection', (socket) => {
     socket
       .to(`workspace:${workspaceId}`)
       .emit('workspace:itemRenamed', { itemId, newName });
+  });
+
+  socket.on('workspace:leave', ({ workspaceId, user }) => {
+    socket.leave(`workspace:${workspaceId}`);
+    const users = roomUsers.get(`workspace:${workspaceId}`) || [];
+    const updatedUsers = users.filter((roomUser) => roomUser.id !== user.id);
+    roomUsers.set(`workspace:${workspaceId}`, updatedUsers);
+
+    logAction(`👋 Client left workspace ${workspaceId}`, io.engine.clientsCount);
+
+    io.to(`workspace:${workspaceId}`).emit('workspace:left', {
+      workspaceId,
+      users: updatedUsers,
+    });
   });
 
   // ---------- Workspace end ----------
