@@ -50,28 +50,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // check if invite link exists
-    const inviteLink = await prisma.workspaceInvite.findFirst({
-      where: {
-        workspaceId,
-      },
-    });
-
-    if (!inviteLink) {
-      return NextResponse.json(
-        { message: 'Приглашение не найдено', success: false },
-        { status: 404 }
-      );
-    }
-
-    // check if invite link is expired
-    if (inviteLink.expiresAt < new Date()) {
-      return NextResponse.json(
-        { message: 'Срок приглашения истек', success: false },
-        { status: 400 }
-      );
-    }
-
     // add user to workspace
     await prisma.workspace.update({
       where: {
