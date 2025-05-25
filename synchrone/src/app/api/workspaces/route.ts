@@ -78,6 +78,14 @@ export async function POST(req: NextRequest) {
       include: {
         users: {
           select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
             username: true,
             email: true,
           },
@@ -123,6 +131,22 @@ export async function PATCH(req: NextRequest) {
       data: {
         name,
       },
+      include: {
+        users: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json(
@@ -150,12 +174,6 @@ export async function DELETE(req: NextRequest) {
 
   try {
     const { id } = await req.json();
-
-    await prisma.file.deleteMany({
-      where: {
-        workspaceId: id,
-      },
-    });
 
     await prisma.workspace.delete({
       where: {

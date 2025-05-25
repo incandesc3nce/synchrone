@@ -22,14 +22,16 @@ export const Workspace = ({
   promise: Promise<WorkspaceResponse>;
   currentUser: TokenPayload | null;
 }) => {
-  const [data, setData] = useState<WorkspaceWithUsers[] | null>(null);
+  const [data, setData] = useState<WorkspaceWithUsers[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [projectName, setProjectName] = useState('');
 
   useEffect(() => {
     promise.then((res) => {
       if (res.projects) {
         setData(res.projects);
+        setIsLoading(false);
       }
     });
   }, [promise]);
@@ -85,24 +87,22 @@ export const Workspace = ({
 
     if (!project) return;
 
-    setData(data ? data.map((item) => (item.id === id ? project : item)) : [project]);
+    setData(data.map((item) => (item.id === id ? project : item)));
 
     toastSuccess('Проект успешно переименован!');
   };
 
   const handleDeleteUser = async (userId: string, workspaceId: string) => {
-    setData((prevData) =>
-      prevData
-        ? prevData.map((item) => {
-            if (item.id === workspaceId) {
-              return {
-                ...item,
-                users: item.users.filter((user) => user.id !== userId),
-              };
-            }
-            return item;
-          })
-        : null
+    setData(
+      data.map((item) => {
+        if (item.id === workspaceId) {
+          return {
+            ...item,
+            users: item.users.filter((user) => user.id !== userId),
+          };
+        }
+        return item;
+      })
     );
 
     await ClientFetch('/api/workspaces/user', {
@@ -124,8 +124,7 @@ export const Workspace = ({
       />
       <main className="flex gap-4 size-full min-h-[75vh]">
         <div className="flex gap-4">
-          {data ? (
-            data.map((item) => (
+            {data.map((item) => (
               <div
                 key={item.id}
                 className="relative flex flex-col justify-between p-4 bg-neutral-800 rounded-lg h-fit w-80">
@@ -206,7 +205,8 @@ export const Workspace = ({
                 </Button>
               </div>
             ))
-          ) : (
+          }
+          {isLoading && (
             <div className="fixed inset-0 flex justify-center items-center">
               <Loader size="h-6" />
             </div>
