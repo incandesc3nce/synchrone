@@ -21,7 +21,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 transition-colors flex justify-center items-center"
+      className="fixed inset-0 z-10 bg-black/50 transition-colors flex justify-center items-center"
       onClick={() => setIsModalOpen(false)}>
       <div
         className="bg-neutral-800 p-4 rounded-lg space-y-0 w-[30vw] transition-all duration-300"
