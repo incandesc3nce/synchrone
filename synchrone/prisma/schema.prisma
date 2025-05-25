@@ -35,8 +35,9 @@ model Workspace {
   owner     User @relation("OwnedWorkspaces", fields: [ownerId], references: [id])
 
   invites    WorkspaceInvite[]
-  files     File[]
-  folders   Folder[]
+
+  content String @default("")
+  language ProgrammingLanguage @default(JavaScript)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,33 +52,13 @@ model WorkspaceInvite {
   updatedAt DateTime @updatedAt
 }
 
-model File {
-  id        String   @id @default(uuid())
-  name      String
-  content   String
-
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
-  workspaceId String
-
-  folder Folder? @relation(fields: [folderId], references: [id])
-  folderId String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Folder {
-  id        String   @id @default(uuid())
-  name      String
-  parentId String?
-  parent Folder? @relation("FolderHierarchy", fields: [parentId], references: [id])
-  children Folder[] @relation("FolderHierarchy")
-
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
-  workspaceId String
-
-  files    File[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum ProgrammingLanguage {
+  JavaScript
+  TypeScript
+  Python
+  Java
+  CPP
+  CSharp
+  Go
+  Rust
 }
