@@ -1,5 +1,4 @@
 import { TokenPayload, TokenPayloadWithColor } from '@/types/auth/TokenPayload';
-import { WSMessage } from '@/types/common';
 import {
   WorkspaceEditor,
   WorkspaceWithUsers,
@@ -9,6 +8,7 @@ import { io, Socket } from 'socket.io-client';
 import { ProgrammingLanguage } from '@/types/core/workspace/ProgrammingLanguage';
 import { ClientFetch } from '@/utils/ClientFetch';
 import { debounce } from '@/utils/debounce';
+import { WSMessage } from '@/types/common';
 
 export type SocketState = 'connecting' | 'connected' | 'disconnected';
 
@@ -23,35 +23,6 @@ export const useSocketConnection = (
   );
   const [status, setStatus] = useState<SocketState>('connecting');
   const [currentUsers, setCurrentUsers] = useState<TokenPayloadWithColor[]>([]);
-
-  const handleChangeLanguage = (newLanguage: ProgrammingLanguage) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('workspace:changeLanguage', {
-        workspaceId: workspace.id,
-        language: newLanguage,
-      });
-    }
-
-    debounce(() =>
-      ClientFetch('/api/editor', {
-        method: 'PATCH',
-        body: JSON.stringify({
-          workspaceId: workspace.id,
-          language: newLanguage,
-          content: undefined,
-        }),
-      })
-    );
-  };
-
-  const handleContentChange = (value: string) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('workspace:edit', {
-        message: value,
-        type: 'code',
-      });
-    }
-  };
 
   useEffect(() => {
     console.log('Connecting to socket server...');
@@ -73,10 +44,25 @@ export const useSocketConnection = (
       setStatus('disconnected');
     });
 
-    socketRef.current.on('workspace:edit', (data: WSMessage) => {
-      console.log('Received message:', data);
-      setContent(data.message);
-    });
+    socketRef.current.on(
+      'workspace:contentEdited',
+      (data: { workspaceId: string; content: string }) => {
+        if (data.workspaceId !== workspace.id) return;
+        console.log('Received message:', data);
+        setContent(data.content);
+
+        debounce(() =>
+          ClientFetch('/api/editor', {
+            method: 'PATCH',
+            body: JSON.stringify({
+              workspaceId: workspace.id,
+              content: data.content,
+              language: undefined,
+            }),
+          })
+        );
+      }
+    );
 
     const userEvent = (
       data: { workspaceId: string; users: TokenPayloadWithColor[] },
@@ -137,6 +123,35 @@ export const useSocketConnection = (
 
   const send = (event: string, data: WSMessage) => {
     socketRef.current?.emit(event, data);
+  };
+
+  const handleChangeLanguage = (newLanguage: ProgrammingLanguage) => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('workspace:changeLanguage', {
+        workspaceId: workspace.id,
+        language: newLanguage,
+      });
+    }
+
+    debounce(() =>
+      ClientFetch('/api/editor', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          workspaceId: workspace.id,
+          language: newLanguage,
+          content: undefined,
+        }),
+      })
+    );
+  };
+
+  const handleContentChange = (value: string) => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('workspace:edit', {
+        message: value,
+        type: 'code',
+      });
+    }
   };
 
   return {

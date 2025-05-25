@@ -8,7 +8,6 @@ const io = new Server(8080, {
   },
 });
 
-const fileStates = new Map();
 const roomUsers = new Map();
 
 io.on('connection', (socket) => {
@@ -39,7 +38,16 @@ io.on('connection', (socket) => {
   });
 
   // Edit content in workspace
-  socket.on('workspace:edit', (data) => {});
+  socket.on('workspace:edit', (data) => {
+    const { workspaceId, content } = data;
+
+    io.to(`workspace:${workspaceId}`).emit('workspace:contentEdited', {
+      workspaceId,
+      content,
+    });
+
+    logAction(`✏️ Content edited in workspace ${workspaceId}`, io.engine.clientsCount);
+  });
 
   // Save content in workspace
   socket.on('workspace:save', (data) => {});

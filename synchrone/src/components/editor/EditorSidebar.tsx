@@ -7,6 +7,7 @@ import { Compass, Folder } from 'lucide-react';
 import { LinkButton } from '../common/LinkButton';
 import { Divider } from '../common/Divider';
 import { LanguageSelect } from './LanguageSelect';
+import { SaveContent } from './SaveContent';
 
 export const EditorSidebar = () => {
   const { workspace, io } = useSocket();
@@ -32,6 +33,8 @@ export const EditorSidebar = () => {
       <div>
         <div>
           <LanguageSelect />
+
+          <SaveContent />
 
           <Typography variant="h4" className="text-gray-300 mb-2 !text-lg !font-medium">
             Состояние соединения
