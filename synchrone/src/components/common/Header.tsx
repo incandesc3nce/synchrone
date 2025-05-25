@@ -5,9 +5,9 @@ import { LogoutButton } from './LogoutButton';
 
 export const Header = () => {
   const token =
-    document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('token='))
+    document?.cookie
+      ?.split('; ')
+      ?.find((row) => row.startsWith('token='))
       ?.replace('token=', '') || null;
 
   return (
@@ -21,7 +21,7 @@ export const Header = () => {
             {token ? (
               <>
                 <li>
-                  <LogoutButton variant='custom' className='text-lg cursor-pointer' />
+                  <LogoutButton variant="custom" className="text-lg cursor-pointer" />
                 </li>
                 <li>
                   <Link href="/workspaces" className="text-lg">
