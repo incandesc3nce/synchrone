@@ -23,11 +23,13 @@ export const WorkspaceUser: FC<WorkspaceUserProps> = ({
       <span>
         {user.username} ({user.email})
       </span>
-      {user.id === ownerId ? (
-        <span className="text-gray-500">(Владелец)</span>
-      ) : (
-        <span className="text-gray-500">(Участник)</span>
-      )}
+      <div className='flex items-center'>
+        {user.id === ownerId ? (
+          <span className="text-gray-500">(Владелец)</span>
+        ) : (
+          <span className="text-gray-500">(Участник)</span>
+        )}
+      </div>
       {isOwner && (
         <button
           className="text-red-500 cursor-pointer"
