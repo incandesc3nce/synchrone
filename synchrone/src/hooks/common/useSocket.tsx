@@ -2,18 +2,56 @@ import { TokenPayload, TokenPayloadWithColor } from '@/types/auth/TokenPayload';
 import { WSMessage } from '@/types/common';
 import {
   WorkspaceEditor,
-  WorkspaceWithFiles,
+  WorkspaceWithUsers,
 } from '@/types/core/workspace/WorkspaceResponse';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { ProgrammingLanguage } from '@/types/core/workspace/ProgrammingLanguage';
+import { ClientFetch } from '@/utils/ClientFetch';
+import { debounce } from '@/utils/debounce';
 
 export type SocketState = 'connecting' | 'connected' | 'disconnected';
 
-export const useSocketConnection = (workspaceId: string, user: TokenPayload) => {
+export const useSocketConnection = (
+  workspace: WorkspaceWithUsers,
+  user: TokenPayload
+) => {
   const socketRef = useRef<Socket | null>(null);
-  const [value, setValue] = useState<string>('');
+  const [content, setContent] = useState<string>(workspace.content);
+  const [language, setLanguage] = useState<ProgrammingLanguage>(
+    workspace.language as ProgrammingLanguage
+  );
   const [status, setStatus] = useState<SocketState>('connecting');
   const [currentUsers, setCurrentUsers] = useState<TokenPayloadWithColor[]>([]);
+
+  const handleChangeLanguage = (newLanguage: ProgrammingLanguage) => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('workspace:changeLanguage', {
+        workspaceId: workspace.id,
+        language: newLanguage,
+      });
+    }
+
+    debounce(() =>
+      ClientFetch('/api/editor', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          workspaceId: workspace.id,
+          language: newLanguage,
+          content: undefined,
+        }),
+      })
+    );
+  };
+
+  const handleContentChange = (value: string) => {
+    if (socketRef.current?.connected) {
+      socketRef.current.emit('workspace:edit', {
+        message: value,
+        type: 'code',
+      });
+    }
+  };
 
   useEffect(() => {
     console.log('Connecting to socket server...');
@@ -35,9 +73,9 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
       setStatus('disconnected');
     });
 
-    socketRef.current.on('message', (data: WSMessage) => {
+    socketRef.current.on('workspace:edit', (data: WSMessage) => {
       console.log('Received message:', data);
-      setValue(data.message);
+      setContent(data.message);
     });
 
     const userEvent = (
@@ -45,7 +83,7 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
       event: 'join' | 'leave'
     ) => {
       console.log(`Workspace ${event === 'join' ? 'joined' : 'left'}:`, data);
-      if (data.workspaceId === workspaceId) {
+      if (data.workspaceId === workspace.id) {
         setCurrentUsers(data.users);
       }
     };
@@ -54,14 +92,21 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
 
     socketRef.current.on('workspace:left', (data) => userEvent(data, 'leave'));
 
-    socketRef.current.emit('workspace:join', { workspaceId, user });
+    socketRef.current.emit('workspace:join', { workspaceId: workspace.id, user });
+
+    socketRef.current.on('workspace:languageChanged', (data) => {
+      console.log('Language changed:', data);
+      if (data.workspaceId === workspace.id) {
+        setLanguage(data.language as ProgrammingLanguage);
+      }
+    });
 
     const handleBeforeUnload = () => {
       console.log('Window is closing, disconnecting from socket server...');
       socketRef.current?.emit(
         'workspace:leave',
         {
-          workspaceId,
+          workspaceId: workspace.id,
           user,
         },
         () => {
@@ -79,7 +124,7 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
       socketRef.current?.emit(
         'workspace:leave',
         {
-          workspaceId,
+          workspaceId: workspace.id,
           user,
         },
         () => {
@@ -88,7 +133,7 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
         }
       );
     };
-  }, [user, workspaceId]);
+  }, [user, workspace]);
 
   const send = (event: string, data: WSMessage) => {
     socketRef.current?.emit(event, data);
@@ -96,18 +141,22 @@ export const useSocketConnection = (workspaceId: string, user: TokenPayload) => 
 
   return {
     socket: socketRef.current,
-    value,
-    setValue,
+    content,
+    setContent,
     send,
     status,
     currentUsers,
     setCurrentUsers,
+    language,
+    setLanguage,
+    handleChangeLanguage,
+    handleContentChange,
   };
 };
 
 const SocketContext = createContext<{
   io: ReturnType<typeof useSocketConnection>;
-  workspace: WorkspaceWithFiles;
+  workspace: WorkspaceWithUsers;
 } | null>(null);
 
 export const SocketProvider = ({
@@ -119,7 +168,7 @@ export const SocketProvider = ({
   user: TokenPayload;
   children: React.ReactNode;
 }) => {
-  const io = useSocketConnection(workspaceResponse.workspace.id, user);
+  const io = useSocketConnection(workspaceResponse.workspace, user);
 
   return (
     <SocketContext.Provider value={{ io, workspace: workspaceResponse.workspace }}>

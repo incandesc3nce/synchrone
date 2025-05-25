@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
     if (!existingUsers.some((u) => u.id === user.id)) {
       roomUsers.set(`workspace:${workspaceId}`, [
         ...(roomUsers.get(`workspace:${workspaceId}`) || []),
-        {...user, color: getRandomColor() },
+        { ...user, color: getRandomColor() },
       ]);
     }
 
@@ -38,34 +38,25 @@ io.on('connection', (socket) => {
     );
   });
 
-  // All CRUD events for workspace are first ran on the server and then broadcasted to all clients in the workspace room to ensure
-  // that all clients have the same state of the workspace.
+  // Edit content in workspace
+  socket.on('workspace:edit', (data) => {});
 
-  // Create workspace folder
-  socket.on('workspace:createFolder', (data) => {
-    const { workspaceId, name, parentId } = data;
-    socket
-      .to(`workspace:${workspaceId}`)
-      .emit('workspace:folderCreated', { name, parentId });
+  // Save content in workspace
+  socket.on('workspace:save', (data) => {});
+
+  // Change programming language in workspace
+  socket.on('workspace:changeLanguage', (data) => {
+    const { workspaceId, language } = data;
+    logAction(`📝 Language changed to ${language} in workspace ${workspaceId}`, io.engine.clientsCount);
+    io.to(`workspace:${workspaceId}`).emit('workspace:languageChanged', {
+      workspaceId,
+      language,
+    });
   });
 
-  // Create workspace file
-  socket.on('workspace:createFile', (data) => {
-    const { workspaceId, name, parentId } = data;
-    socket
-      .to(`workspace:${workspaceId}`)
-      .emit('workspace:fileCreated', { name, parentId });
-  });
-
-  // Rename workspace file
-  socket.on('workspace:renameItem', (data) => {
-    const { workspaceId, itemId, newName } = data;
-    socket
-      .to(`workspace:${workspaceId}`)
-      .emit('workspace:itemRenamed', { itemId, newName });
-  });
-
-  socket.on('workspace:leave', ({ workspaceId, user }) => {
+  // Fires when user leaves the workspace
+  socket.on('workspace:leave', (data) => {
+    const { workspaceId, user } = data;
     socket.leave(`workspace:${workspaceId}`);
     const users = roomUsers.get(`workspace:${workspaceId}`) || [];
     const updatedUsers = users.filter((roomUser) => roomUser.id !== user.id);
@@ -80,25 +71,6 @@ io.on('connection', (socket) => {
   });
 
   // ---------- Workspace end ----------
-
-  // ---------- Files ----------
-
-  // Join file room
-  socket.on('file:join', (fileId) => {
-    socket.join(`file:${fileId}`);
-    logAction(`📂 Client joined file ${fileId}`, io.engine.clientsCount);
-  });
-
-  // Edit file
-  socket.on('file:edit', (data) => {
-    const { fileId, content } = data;
-
-    socket.to(`file:${fileId}`).emit('file:update', { content });
-
-    // file persistence logic can be added here
-  });
-
-  // ---------- Files end ----------
 
   socket.on('disconnect', () => {
     logAction('🚪 Client disconnected', io.engine.clientsCount);

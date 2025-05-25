@@ -8,17 +8,13 @@ import { useSocket } from '@/hooks/common';
 
 export const CodeEditor = () => {
   const { io } = useSocket();
-  const [doc, setDoc] = useState(io.value);
+  const [doc, setDoc] = useState(io.content);
 
-  const handleCodeChange = (value: string) => {
-    if (io.socket?.connected) {
-      io.send('file:edit', { message: value, type: 'code' });
-    }
-  };
+  const lang = io.language;
 
   useEffect(() => {
-    setDoc(io.value);
-  }, [io.value]);
+    setDoc(io.content);
+  }, [io.content]);
 
   return (
     <>
@@ -30,15 +26,11 @@ export const CodeEditor = () => {
           value={doc}
           onChange={(value) => {
             setDoc(value);
-            handleCodeChange(value);
+            io.handleContentChange(value);
           }}
           height="100%"
           theme={'dark'}
-          extensions={[
-            basicSetup({ foldGutter: false }),
-            langs.javascript(),
-            oneDarkTheme,
-          ]}
+          extensions={[basicSetup({ foldGutter: false }), langs[lang](), oneDarkTheme]}
         />
       )}
     </>

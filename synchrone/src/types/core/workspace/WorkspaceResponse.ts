@@ -1,19 +1,13 @@
-import { User, Workspace } from '@prisma/client';
+import { User, Workspace } from '../../../../prisma/generated';
 import { APIResponse } from '../../common/APIResponse';
-import { File } from '../../../../prisma/generated';
 
 export type WorkspaceWithUsers = Workspace & {
   users: User[];
   owner?: User;
 };
 
-export type WorkspaceWithFiles = Workspace & {
-  users: User[];
-  files: File[];
-};
-
 export type WorkspaceEditor = APIResponse & {
-  workspace: WorkspaceWithFiles;
+  workspace: WorkspaceWithUsers;
 };
 
 export type WorkspaceResponse = APIResponse & {

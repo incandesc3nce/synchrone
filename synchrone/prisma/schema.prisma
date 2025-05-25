@@ -37,7 +37,7 @@ model Workspace {
   invites    WorkspaceInvite[]
 
   content String @default("")
-  language ProgrammingLanguage @default(JavaScript)
+  language String @default("javascript")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,15 +50,4 @@ model WorkspaceInvite {
   expiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-enum ProgrammingLanguage {
-  JavaScript
-  TypeScript
-  Python
-  Java
-  CPP
-  CSharp
-  Go
-  Rust
 }

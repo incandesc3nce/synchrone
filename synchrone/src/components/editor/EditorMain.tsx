@@ -6,7 +6,13 @@ import { EditorSidebar } from './EditorSidebar';
 import { WorkspaceEditor } from '@/types/core/workspace/WorkspaceResponse';
 import { TokenPayload } from '@/types/auth/TokenPayload';
 
-export const EditorMain = ({ workspaceResponse, user }: { workspaceResponse: WorkspaceEditor, user: TokenPayload }) => {
+export const EditorMain = ({
+  workspaceResponse,
+  user,
+}: {
+  workspaceResponse: WorkspaceEditor;
+  user: TokenPayload;
+}) => {
   return (
     <main className="size-full flex items-center">
       <SocketProvider workspaceResponse={workspaceResponse} user={user}>
