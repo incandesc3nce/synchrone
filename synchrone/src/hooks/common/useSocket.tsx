@@ -129,6 +129,7 @@ export const useSocketConnection = (
         }
       );
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, workspace]);
 
   const send = (event: string, data: WSMessage) => {

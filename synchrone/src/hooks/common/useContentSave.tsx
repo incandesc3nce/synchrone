@@ -65,5 +65,6 @@ export const useContentSave = () => {
   return {
     isLoading,
     isSaved,
+    saveContent,
   };
 };
