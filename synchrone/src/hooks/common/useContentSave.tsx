@@ -47,7 +47,7 @@ export const useContentSave = () => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 's') {
+      if (event.altKey && event.key === 's') {
         event.preventDefault();
         if (content) {
           saveContent(content);
