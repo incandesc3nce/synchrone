@@ -9,6 +9,8 @@ import { ClientFetch } from '@/utils/ClientFetch';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
+import { validateEmail } from '@/lib/validation/email';
+import { validatePassword } from '@/lib/validation/password';
 
 export default function SignUpPage() {
   const emailRef = useRef<HTMLInputElement | null>(null);
@@ -19,16 +21,28 @@ export default function SignUpPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsLoading(true);
     const email = emailRef.current?.value;
     const username = usernameRef.current?.value;
     const password = passwordRef.current?.value;
-
+    
     if (!email || !username || !password) {
-      setIsLoading(false);
+      toastError('Пожалуйста, заполните все поля.');
       return;
     }
-
+    
+    const emailErrorMessage = validateEmail(email);
+    if (emailErrorMessage) {
+      toastError(emailErrorMessage);
+      return;
+    }
+    
+    const passwordErrorMessage = validatePassword(password);
+    if (passwordErrorMessage) {
+      toastError(passwordErrorMessage);
+      return;
+    }
+    
+    setIsLoading(true);
     try {
       const { message, success } = await ClientFetch<APIResponse>('/api/auth/sign-up', {
         method: 'POST',
